@@ -1,0 +1,34 @@
+modLoader="javafml" #mandatory
+loaderVersion="[28,)" #mandatory (28 is current forge version)
+
+[[mods]]
+modId="recrafted"
+version="0.1.0-dev"
+displayName="Recrafted"
+#updateJSONURL="http://myurl.me/"
+#displayURL="http://example.com/"
+#logoFile="examplemod.png"
+credits="The whole revivalmodding team - Psychokiller, MegaBee, Gary, Toma, and more"
+authors="Coders: Toma; Modelers: Psychokiller, MegaBee, Gary"
+description='''
+'''
+
+[[mods]]
+modId="configlib"
+version="1.0"
+displayName="Config Lib"
+authors="Toma"
+"description"='''
+This is config library based on .json format
+
+Supports multiple objects, collections and better general design
+
+Made as much user friendly as possible, same applies for devs
+'''
+
+[[dependencies.recrafted]] #optional
+    modId="configlib" #mandatory
+    mandatory=true #mandatory
+    versionRange="[1.0,)" #mandatory
+    ordering="BEFORE"
+    side="BOTH"
