@@ -19,7 +19,7 @@ public class SeasonData {
     public void tickWorld(TickEvent.WorldTickEvent event) {
         lastTickDay = getDay(event.world);
         Season season = getSeason();
-        if(lastTickDay == season.mildSeasonEnd) {
+        if(lastTickDay % RecraftedConfig.getSeasonConfiguration().yearCycle.get() == season.mildSeasonEnd) {
             if(currentSeasonID == 3) {
                 lastTickDay = 0;
                 currentSeasonID = 0;

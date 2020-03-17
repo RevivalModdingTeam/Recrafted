@@ -46,6 +46,22 @@ public class Season {
         return index;
     }
 
+    public boolean isSpring() {
+        return index == 0;
+    }
+
+    public boolean isSummmer() {
+        return index == 1;
+    }
+
+    public boolean isFall() {
+        return index == 2;
+    }
+
+    public boolean isWinter() {
+        return index == 3;
+    }
+
     protected static class SeasonBuilder {
 
         private byte id;

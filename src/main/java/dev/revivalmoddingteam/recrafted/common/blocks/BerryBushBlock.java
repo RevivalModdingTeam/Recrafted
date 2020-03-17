@@ -1,0 +1,93 @@
+package dev.revivalmoddingteam.recrafted.common.blocks;
+
+import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
+import dev.revivalmoddingteam.recrafted.world.season.Season;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
+
+import java.util.Random;
+import java.util.function.Supplier;
+
+// TODO make preffered habitat
+public class BerryBushBlock extends RecraftedBlock {
+
+    public static final IntegerProperty AGE_PROPERTY = IntegerProperty.create("age", 0, 3);
+    public static final BooleanProperty FROZEN_PROPERTY = BooleanProperty.create("frozen");
+
+    protected final Supplier<ItemStack> growableItem;
+
+    public BerryBushBlock(String key, Supplier<ItemStack> growableItem) {
+        super(key, Properties.create(Material.PLANTS).tickRandomly());
+        this.growableItem = growableItem;
+        setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
+    }
+
+    @Override
+    public void randomTick(BlockState state, World worldIn, BlockPos pos, Random random) {
+        Season season = WorldCapFactory.getData(worldIn).getSeasonData().getSeason();
+        if(!season.isWinter()) {
+            if(!isMaxAge(state) && random.nextInt(10) == 0) {
+                worldIn.setBlockState(pos, state.with(AGE_PROPERTY, getCurrentAge(state) + 1));
+            } else if(state.get(FROZEN_PROPERTY)) {
+                worldIn.setBlockState(pos, Blocks.DEAD_BUSH.getDefaultState(), 3);
+            }
+        } else {
+            if(!state.get(FROZEN_PROPERTY) && random.nextInt(10) == 0) {
+                worldIn.setBlockState(pos, state.with(FROZEN_PROPERTY, true));
+            }
+        }
+        super.randomTick(state, worldIn, pos, random);
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if(!worldIn.isRemote && state.get(FROZEN_PROPERTY)) {
+            if(worldIn.rand.nextInt(10) == 0) {
+                player.addItemStackToInventory(new ItemStack(Blocks.ICE));
+                worldIn.setBlockState(pos, Blocks.DEAD_BUSH.getDefaultState(), 3);
+                return true;
+            }
+            return false;
+        } else {
+            if(!worldIn.isRemote && isMaxAge(state)) {
+                Season season = WorldCapFactory.getData(worldIn).getSeasonData().getSeason();
+                ItemStack stack = growableItem.get();
+                int droppedAmount = stack.getCount();
+                if(season.isFall()) {
+                    droppedAmount *= 2;
+                }
+                droppedAmount = droppedAmount > 64 ? 64 : droppedAmount;
+                stack.setCount(1 + worldIn.rand.nextInt(droppedAmount));
+                player.addItemStackToInventory(stack);
+                worldIn.setBlockState(pos, state.with(AGE_PROPERTY, 0));
+            }
+        }
+        return true;
+    }
+
+    public int getCurrentAge(BlockState state) {
+        return state.get(AGE_PROPERTY);
+    }
+
+    public boolean isMaxAge(BlockState state) {
+        return getCurrentAge(state) == 3;
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(AGE_PROPERTY);
+        builder.add(FROZEN_PROPERTY);
+    }
+}

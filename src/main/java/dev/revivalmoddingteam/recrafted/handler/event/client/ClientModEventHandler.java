@@ -20,6 +20,7 @@ public class ClientModEventHandler {
                 Blocks.GRASS_BLOCK, Blocks.FERN, Blocks.GRASS, Blocks.POTTED_FERN);
         // leaves
         colors.register((state, envReader, pos, tintIdx) -> Seasons.getFoliageColors(envReader, pos),
-                Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.TALL_GRASS, Blocks.LARGE_FERN);
+                Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.VINE, Blocks.TALL_GRASS,
+                Blocks.LARGE_FERN);
     }
 }
