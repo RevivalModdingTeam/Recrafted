@@ -5,9 +5,9 @@ import dev.revivalmoddingteam.recrafted.world.season.Season;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
@@ -29,7 +29,7 @@ public class BerryBushBlock extends RecraftedBlock {
     protected final Supplier<ItemStack> growableItem;
 
     public BerryBushBlock(String key, Supplier<ItemStack> growableItem) {
-        super(key, Properties.create(Material.PLANTS).tickRandomly());
+        super(key, Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
         this.growableItem = growableItem;
         setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
     }
