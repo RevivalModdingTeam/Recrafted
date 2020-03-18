@@ -43,7 +43,7 @@ public class ClientManager extends Manager {
                     String contents = readFileToString(entry);
                     JsonParser parser = new JsonParser();
                     JsonObject object = parser.parse(contents).getAsJsonObject();
-                    ConfigLib.log.info("Deserializing config for mod {} with class {}", modid, config.getClass());
+                    ConfigLib.log.info("Deserializing config for mod {} with {}", modid, config.getClass());
                     try {
                         config.deserializeClient(object.has("client") ? object.getAsJsonObject("client") : new JsonObject());
                         config.deserialize(object.has("common") ? object.getAsJsonObject("common") : new JsonObject());

@@ -1,15 +1,23 @@
 package dev.revivalmoddingteam.recrafted.handler.event.common;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
+import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.handler.event.Action;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
+import dev.revivalmoddingteam.recrafted.player.PlayerCapProvider;
+import dev.revivalmoddingteam.recrafted.util.helper.TemperatureHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapProvider;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +27,18 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Recrafted.MODID)
 public class CommonForgeEventHandler {
+
+    //@SubscribeEvent
+    public static void entitySpawn(EntityJoinWorldEvent event) {
+        Entity entity = event.getEntity();
+        if(entity instanceof ItemEntity) {
+            if(entity.world.isRemote) return;
+            RecraftedItemEntity recraftedItemEntity = new RecraftedItemEntity(entity.world, entity.posX, entity.posY, entity.posZ, ((ItemEntity) entity).getItem().copy());
+            recraftedItemEntity.setMotion(entity.getMotion());
+            event.getWorld().addEntity(recraftedItemEntity);
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerLogIn(PlayerEvent.PlayerLoggedInEvent event) {
@@ -35,12 +55,21 @@ public class CommonForgeEventHandler {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
             updateScheduler();
+            PlayerEntity entity = event.player;
+            if(!entity.world.isRemote && entity.world.getDayTime() % 20 == 0) {
+                entity.sendStatusMessage(new StringTextComponent("Temperature: " + (int)(TemperatureHelper.getTemperatureAt(entity.world, entity.getPosition()) * 30)), true);
+            }
         }
     }
 
     @SubscribeEvent
     public static void attachWorldCap(AttachCapabilitiesEvent<World> event) {
         event.addCapability(Recrafted.getResource("worldcap"), new WorldCapProvider());
+    }
+
+    @SubscribeEvent
+    public static void attachPlayerCap(AttachCapabilitiesEvent<PlayerEntity> event) {
+        event.addCapability(Recrafted.getResource("playercap"), new PlayerCapProvider(event.getObject()));
     }
 
     private static final List<Action> scheduler = new ArrayList<>();

@@ -2,7 +2,10 @@ package dev.revivalmoddingteam.recrafted.handler;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
+import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -10,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,6 +38,15 @@ public class Registry {
 
     public static class REntityTypes {
         public static final DeferredRegister<EntityType<?>> TYPES = new DeferredRegister<>(ForgeRegistries.ENTITIES, Recrafted.MODID);
+        public static final RegistryObject<EntityType<Entity>> RECRAFTED_ITEM = register("item", builder(RecraftedItemEntity::new, EntityClassification.MISC).setUpdateInterval(2).setTrackingRange(32).disableSummoning());
+
+        private static <T extends Entity> RegistryObject<EntityType<T>> register(String name, EntityType.Builder<T> builder) {
+            return TYPES.register(name, () -> builder.build(Recrafted.getResource(name).toString()));
+        }
+
+        private static <T extends Entity> EntityType.Builder<T> builder(EntityType.IFactory<T> factory, EntityClassification classification) {
+            return EntityType.Builder.create(factory, classification);
+        }
     }
 
     public static class RTileEntityTypes {

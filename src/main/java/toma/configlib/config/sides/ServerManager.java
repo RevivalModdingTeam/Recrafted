@@ -43,7 +43,7 @@ public class ServerManager extends Manager {
                     MinecraftForge.EVENT_BUS.post(new ConfigEvent.Load(fileEntry, modid));
                     String content = Manager.readFileToString(fileEntry);
                     JsonObject contentObject = new JsonParser().parse(content).getAsJsonObject();
-                    ConfigLib.log.info("Deserializing config for mod {} with class {}", modid, implementation.getClass());
+                    ConfigLib.log.info("Deserializing config for mod {} with {}", modid, implementation.getClass());
                     try {
                         implementation.deserializeClient(contentObject.has("client") ? contentObject.getAsJsonObject("client") : new JsonObject());
                         implementation.deserialize(contentObject.has("common") ? contentObject.getAsJsonObject("common") : new JsonObject());
