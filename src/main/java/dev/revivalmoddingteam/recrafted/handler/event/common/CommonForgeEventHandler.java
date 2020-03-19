@@ -1,6 +1,7 @@
 package dev.revivalmoddingteam.recrafted.handler.event.common;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
+import dev.revivalmoddingteam.recrafted.common.command.RecraftedCommand;
 import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.handler.event.Action;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
@@ -21,6 +22,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class CommonForgeEventHandler {
             updateScheduler();
             PlayerEntity entity = event.player;
             if(!entity.world.isRemote && entity.world.getDayTime() % 20 == 0) {
-                entity.sendStatusMessage(new StringTextComponent("Temperature: " + (int)(TemperatureHelper.getTemperatureAt(entity.world, entity.getPosition()) * 30)), true);
+                entity.sendStatusMessage(new StringTextComponent("Temperature: " + 30 * TemperatureHelper.getTemperatureAt(entity.world, entity.getPosition())), true);
             }
         }
     }
@@ -70,6 +72,11 @@ public class CommonForgeEventHandler {
     @SubscribeEvent
     public static void attachPlayerCap(AttachCapabilitiesEvent<PlayerEntity> event) {
         event.addCapability(Recrafted.getResource("playercap"), new PlayerCapProvider(event.getObject()));
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(FMLServerStartingEvent event) {
+        RecraftedCommand.register(event.getCommandDispatcher());
     }
 
     private static final List<Action> scheduler = new ArrayList<>();

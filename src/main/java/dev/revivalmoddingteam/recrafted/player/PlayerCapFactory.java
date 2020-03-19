@@ -1,15 +1,12 @@
 package dev.revivalmoddingteam.recrafted.player;
 
-import dev.revivalmoddingteam.recrafted.player.objects.TemperatureData;
-import dev.revivalmoddingteam.recrafted.player.objects.ThirstData;
+import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 public class PlayerCapFactory implements IPlayerCap {
 
-    private final ThirstData thirstData = new ThirstData();
-    private final TemperatureData temperatureData = new TemperatureData();
-
+    private final PlayerStatData playerStatData = new PlayerStatData();
     private PlayerEntity playerEntity;
 
     public PlayerCapFactory() {
@@ -20,13 +17,13 @@ public class PlayerCapFactory implements IPlayerCap {
     }
 
     @Override
-    public ThirstData getThirstData() {
-        return thirstData;
+    public void onTick() {
+        playerStatData.tickPlayer(playerEntity);
     }
 
     @Override
-    public TemperatureData getTemperatureData() {
-        return temperatureData;
+    public PlayerStatData getStats() {
+        return playerStatData;
     }
 
     @Override
@@ -36,6 +33,11 @@ public class PlayerCapFactory implements IPlayerCap {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+
+    }
+
+    @Override
+    public void syncToClient() {
 
     }
 }
