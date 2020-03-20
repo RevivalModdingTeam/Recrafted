@@ -18,7 +18,7 @@ import java.util.List;
 public class RecraftedDebug {
 
     private static boolean debugMode = false;
-    private static List<DebugEntry> entryList;
+    private static List<DebugEntry<?>> entryList;
 
     public static void toggleDebugMode() {
         debugMode = !debugMode;
@@ -52,8 +52,10 @@ public class RecraftedDebug {
                 FontRenderer renderer = mc.fontRenderer;
                 PlayerEntity player = mc.player;
                 World world = mc.world;
-                if(entryList != null) entryList.forEach(entry -> entry.update(world, player));
                 for(int i = 0; i < entryList.size(); i++) {
+                    DebugEntry<?> debugEntry = entryList.get(i);
+                    if(debugEntry == null) break;
+                    debugEntry.update(world, player);
                     renderer.drawStringWithShadow(entryList.get(i).toString(), 10, 10 + i * 12, 0xffffff);
                 }
             }
