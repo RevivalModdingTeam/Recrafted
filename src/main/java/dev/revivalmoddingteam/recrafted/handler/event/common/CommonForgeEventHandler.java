@@ -57,10 +57,6 @@ public class CommonForgeEventHandler {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
             updateScheduler();
-            PlayerEntity entity = event.player;
-            if(!entity.world.isRemote && entity.world.getDayTime() % 20 == 0) {
-                entity.sendStatusMessage(new StringTextComponent("Temperature: " + 30 * TemperatureHelper.getTemperatureAt(entity.world, entity.getPosition())), true);
-            }
         }
     }
 

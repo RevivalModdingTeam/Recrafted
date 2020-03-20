@@ -1,5 +1,6 @@
 package dev.revivalmoddingteam.recrafted.world.terrain;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
@@ -43,6 +44,7 @@ public class RecraftedChunkGenerator extends ChunkGenerator<OverworldGenSettings
                 int posZ = zStart + z;
                 int y = chunkIn.getTopBlockY(Heightmap.Type.WORLD_SURFACE_WG, posX, posZ) + 1;
                 double d = surfaceGen.func_215460_a(posX * 0.0625, posZ * 0.0625, 0.0625, x * 0.0625);
+                BlockState state = getSettings().getDefaultBlock();
                 biomes[z * 16 + x].buildSurface(randomSeed, chunkIn, posX, posZ, y, d, getSettings().getDefaultBlock(), getSettings().getDefaultFluid(), getSeaLevel(), world.getSeed());
             }
         }

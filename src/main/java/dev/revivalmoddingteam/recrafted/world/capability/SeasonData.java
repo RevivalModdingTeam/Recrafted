@@ -1,5 +1,6 @@
 package dev.revivalmoddingteam.recrafted.world.capability;
 
+import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketForceChunkReload;
@@ -30,8 +31,12 @@ public class SeasonData {
         season.tick(event.world);
     }
 
-    public void setSeasonID(int id) {
+    public void setSeasonID(int id, World world) {
+        int seasonDays = RecraftedConfig.getSeasonConfiguration().yearCycle.get() / 4;
+        this.dayInCycle = seasonDays * id;
+        this.lastTickDay = dayInCycle;
         this.currentSeasonID = id;
+        NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), world);
     }
 
     public void setDayInCycle(int dayInCycle) {

@@ -3,11 +3,14 @@ package dev.revivalmoddingteam.recrafted.util.helper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.season.Season;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public class TemperatureHelper {
+
+    // TODO some improvements:
+    // season values either add or subtract instead of multiplying
+    // same applies for pretty much everything else, so temperature is never locked on 0
 
     public static float getTemperatureAt(World world, BlockPos pos) {
         Biome biome = world.getBiome(pos);
@@ -15,6 +18,7 @@ public class TemperatureHelper {
         float biomeTemp = biome.getTemperature(pos);
         float biomeTempModified = biomeTemp * season.getTemperatureModified(world);
         float temp = getTemperatureBasedOnHeight(world, pos, getTemperatureBasedOnTime(world, biomeTempModified));
+        // TODO implement temp modifier dependent on light level in world
         //System.out.println(world.getLightFor(LightType.BLOCK, pos));
         if(world.isRaining()) {
             temp = temp * 0.85F;
