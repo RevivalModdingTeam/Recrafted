@@ -39,7 +39,7 @@ public class Season {
         return foliageColorMultiplier;
     }
 
-    public float getTemperatureModified(World world) {
+    public float getTemperature(World world) {
         return tempModifier * (isMild(world) ? 0.5F : 1.0F);
     }
 

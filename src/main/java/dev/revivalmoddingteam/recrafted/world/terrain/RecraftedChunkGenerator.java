@@ -43,7 +43,7 @@ public class RecraftedChunkGenerator extends ChunkGenerator<OverworldGenSettings
                 int posX = xStart + x;
                 int posZ = zStart + z;
                 int y = chunkIn.getTopBlockY(Heightmap.Type.WORLD_SURFACE_WG, posX, posZ) + 1;
-                double d = surfaceGen.func_215460_a(posX * 0.0625, posZ * 0.0625, 0.0625, x * 0.0625);
+                double d = surfaceGen.noiseAt(posX * 0.0625, posZ * 0.0625, 0.0625, x * 0.0625);
                 BlockState state = getSettings().getDefaultBlock();
                 biomes[z * 16 + x].buildSurface(randomSeed, chunkIn, posX, posZ, y, d, getSettings().getDefaultBlock(), getSettings().getDefaultFluid(), getSeaLevel(), world.getSeed());
             }

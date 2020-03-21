@@ -35,8 +35,7 @@ public class RecraftedDebug {
             entryList.add(new DebugEntry<>("Recrafted debugger", (world, player) -> debugMode ? "Active" : "Disabled"));
             entryList.add(new DebugEntry<>("Season", (world, player) -> WorldCapFactory.getData(world).getSeasonData().getSeason().getSeasonIndex()));
             entryList.add(new DebugEntry<>("Biome temp", (world, player) -> world.getBiome(player.getPosition()).getTemperature(player.getPosition())));
-            entryList.add(new DebugEntry<>("Biome temp modified", (world, player) -> world.getBiome(player.getPosition()).getTemperature(player.getPosition()) * WorldCapFactory.getData(world).getSeasonData().getSeason().getTemperatureModified(world)));
-            entryList.add(new DebugEntry<>("Actual temp", (world, player) -> TemperatureHelper.getTemperatureAt(world, player.getPosition()) * 30));
+            entryList.add(new DebugEntry<>("Actual temp", (world, player) -> TemperatureHelper.getTemperatureAt(world, player.getPosition()) * 20));
         } else entryList = null;
     }
 

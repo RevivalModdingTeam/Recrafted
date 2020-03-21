@@ -38,28 +38,28 @@ public class Seasons {
             Season.SeasonBuilder.create()
                     .id(0)
                     .colors(0x2F88F0, 0x00CD21)
-                    .tempModifier(0.8F)
+                    .tempModifier(0.2F)
                     .onTick(world -> {})
                     .build(),
 
             Season.SeasonBuilder.create()
                     .id(1)
                     .colors(0x34D3EF, 0x529300)
-                    .tempModifier(1.5F)
+                    .tempModifier(0.4F)
                     .onTick(world -> {})
                     .build(),
 
             Season.SeasonBuilder.create()
                     .id(2)
                     .colors(0x005DFF, 0xA74200)
-                    .tempModifier(0.65F)
+                    .tempModifier(0.05F)
                     .onTick(world -> {})
                     .build(),
 
             Season.SeasonBuilder.create()
                     .id(3)
                     .colors(0x2B8EB5, 0x36B569)
-                    .tempModifier(-0.5F)
+                    .tempModifier(-0.8F)
                     .onTick(world -> {})
                     .build()
     };

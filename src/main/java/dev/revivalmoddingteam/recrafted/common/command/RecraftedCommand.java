@@ -26,7 +26,7 @@ public class RecraftedCommand {
     }
 
     private static int setSeason(CommandContext<CommandSource> ctx, int seasonID) {
-        World world = ctx.getSource().getWorld();
+        World world = ctx.getSource().func_197023_e();
         IWorldCap worldCap = WorldCapFactory.getData(world);
         worldCap.getSeasonData().setSeasonID(seasonID, world);
         worldCap.updateClients(world);
