@@ -9,14 +9,12 @@ import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
 import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapProvider;
-import dev.revivalmoddingteam.recrafted.util.helper.TemperatureHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -32,6 +30,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Recrafted.MODID)
 public class CommonForgeEventHandler {
 
+    // TODO realistic item entities
     //@SubscribeEvent
     public static void entitySpawn(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
