@@ -45,6 +45,7 @@ public class ClientForgeEventHandler {
             PlayerStatData stats = PlayerCapFactory.get(player).getStats();
             int thirstLevel = stats.getThirstLevel();
             int left = event.getWindow().getScaledWidth() / 2 + 10;
+            // TODO move up when player is under water
             int top = event.getWindow().getScaledHeight() - 49;
             for(int i = 1; i <= 10; i++) {
                 int pos = i * 2;

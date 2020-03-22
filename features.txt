@@ -1,0 +1,16 @@
+List of features added so far
+
+0.0.1 ===============================================================
++ Added custom config library + implementation
++ World type (kinda useless currently)
++ Seasons - different temperatures, colors
++ Function to get temperature in world based on season, daytime, height and light level
++ World and Player data storages - capabilities
++ Network system
++ Event handlers
++ Thirst overlay
++ Debug tools
++ Command /recrafted
++ Berry bush block logic
++ Fruit leaves block logic
++ Food item logic

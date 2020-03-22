@@ -19,9 +19,9 @@ public class PlayerStatData {
             if(thirstLevel <= 6 || stamina <= 0.0F) {
                 player.setSprinting(false);
             }
-            thirstSaturation -= 0.02F;
+            thirstSaturation -= 0.04F;
         } else {
-            thirstSaturation -= 0.005F;
+            thirstSaturation -= 0.01F;
         }
         if(thirstSaturation < 0.0F) {
             if(!player.world.isRemote && thirstLevel == 0) {
