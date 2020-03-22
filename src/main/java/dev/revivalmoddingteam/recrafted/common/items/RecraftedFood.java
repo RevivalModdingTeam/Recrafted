@@ -1,17 +1,25 @@
 package dev.revivalmoddingteam.recrafted.common.items;
 
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
+import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Supplier;
 
 public class RecraftedFood extends RecraftedItem {
 
@@ -24,6 +32,7 @@ public class RecraftedFood extends RecraftedItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if(worldIn.isRemote) return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
         if(stats.food > 0) {
             if(playerIn.canEat(stats.alwaysUseable)) {
                 playerIn.setActiveHand(handIn);
@@ -44,15 +53,19 @@ public class RecraftedFood extends RecraftedItem {
 
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        if(entityLiving instanceof PlayerEntity) {
+        if(!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
+            IPlayerCap cap = PlayerCapFactory.get(player);
             FoodStats foodStats = player.getFoodStats();
-            PlayerStatData statData = PlayerCapFactory.get(player).getStats();
+            PlayerStatData statData = cap.getStats();
             foodStats.setFoodLevel(Math.min(20, foodStats.getFoodLevel() + stats.food));
             foodStats.setFoodSaturationLevel(Math.min(24.0F, foodStats.getSaturationLevel() + stats.foodSaturation));
             statData.setThirstLevel(Math.min(20, statData.getThirstLevel() + stats.thirstLevel));
             statData.setThirstSaturation(stats.thirstLevel > 0 ? 25.0F : statData.getThirstSaturation());
             statData.setStamina(Math.min(statData.getMaxStamina(), statData.getStamina() + stats.energy));
+            stats.applyEffects(player);
+            cap.syncToClient();
+            stack.shrink(1);
         }
         return stack;
     }
@@ -65,6 +78,7 @@ public class RecraftedFood extends RecraftedItem {
         private float energy = 0.0F;
         private boolean fastUse = false;
         private boolean alwaysUseable = false;
+        private List<Pair<Integer, Supplier<EffectInstance>>> extraEffects;
 
         public Stats() {
         }
@@ -95,6 +109,12 @@ public class RecraftedFood extends RecraftedItem {
             return this;
         }
 
+        public Stats effect(int chance, Supplier<EffectInstance> effectFactory) {
+            if(extraEffects == null) extraEffects = new ArrayList<>();
+            extraEffects.add(Pair.of(chance, effectFactory));
+            return this;
+        }
+
         public int getFood() {
             return food;
         }
@@ -117,6 +137,20 @@ public class RecraftedFood extends RecraftedItem {
 
         public boolean isAlwaysUseable() {
             return alwaysUseable;
+        }
+
+        public boolean hasPotionEffects() {
+            return extraEffects != null && !extraEffects.isEmpty();
+        }
+
+        public void applyEffects(LivingEntity entity) {
+            if(!hasPotionEffects()) return;
+            Random random = new Random();
+            for(Pair<Integer, Supplier<EffectInstance>> pair : extraEffects) {
+                if(random.nextFloat() <= pair.getLeft() / 100f) {
+                    entity.addPotionEffect(pair.getRight().get());
+                }
+            }
         }
     }
 }

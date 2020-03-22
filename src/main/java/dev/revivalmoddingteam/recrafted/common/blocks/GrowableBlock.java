@@ -20,15 +20,14 @@ import net.minecraft.world.World;
 import java.util.Random;
 import java.util.function.Supplier;
 
-// TODO make preffered habitat
-public class BerryBushBlock extends RecraftedBlock {
+public class GrowableBlock extends RecraftedBlock {
 
     public static final IntegerProperty AGE_PROPERTY = IntegerProperty.create("age", 0, 3);
     public static final BooleanProperty FROZEN_PROPERTY = BooleanProperty.create("frozen");
 
     protected final Supplier<ItemStack> growableItem;
 
-    public BerryBushBlock(String key, Supplier<ItemStack> growableItem) {
+    public GrowableBlock(String key, Supplier<ItemStack> growableItem) {
         super(key, Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
         this.growableItem = growableItem;
         setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));

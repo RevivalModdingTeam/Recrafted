@@ -3,6 +3,7 @@ package dev.revivalmoddingteam.recrafted.handler;
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
 import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
+import dev.revivalmoddingteam.recrafted.common.items.RecraftedFood;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -10,6 +11,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,7 +31,12 @@ public class Registry {
 
     @ObjectHolder(Recrafted.MODID)
     public static class RItems {
-
+        // berries and food
+        public static final RecraftedFood BLUEBERRY = null;
+        public static final RecraftedFood RASPBERRY = null;
+        public static final RecraftedFood BLACKBERRY = null;
+        public static final RecraftedFood SNOWBERRY = null;
+        public static final RecraftedFood STRAWBERRY = null;
     }
 
     @ObjectHolder(Recrafted.MODID)
@@ -72,8 +80,19 @@ public class Registry {
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             IForgeRegistry<Item> registry = event.getRegistry();
+            registry.registerAll(
+                    new RecraftedFood("blueberry", new RecraftedFood.Stats().food(1, 0.2F)),
+                    new RecraftedFood("raspberry", new RecraftedFood.Stats().food(1, 0.3F)),
+                    new RecraftedFood("blackberry", new RecraftedFood.Stats().food(1, 0.3F)),
+                    new RecraftedFood("snowberry", new RecraftedFood.Stats().food(1, 0.2F).effect(75, () -> new EffectInstance(Effects.POISON, 200)).alwaysUseable()),
+                    new RecraftedFood("strawberry", new RecraftedFood.Stats().food(2, 0.4F).water(1).alwaysUseable())
+            );
             BLOCK_ITEM_LIST.stream().filter(Objects::nonNull).forEach(registry::register);
             BLOCK_ITEM_LIST = null;
+        }
+
+        public static void registerBlockItem(BlockItem blockItem) {
+            BLOCK_ITEM_LIST.add(blockItem);
         }
 
         public static void registerBlockItem(Block block) {
