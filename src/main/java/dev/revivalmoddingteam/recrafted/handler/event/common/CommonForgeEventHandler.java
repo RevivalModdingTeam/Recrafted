@@ -6,6 +6,8 @@ import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.handler.event.Action;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
+import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
+import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapProvider;
 import dev.revivalmoddingteam.recrafted.util.helper.TemperatureHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
@@ -57,6 +59,8 @@ public class CommonForgeEventHandler {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
             updateScheduler();
+            IPlayerCap cap = PlayerCapFactory.get(event.player);
+            cap.onTick();
         }
     }
 
@@ -66,8 +70,10 @@ public class CommonForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void attachPlayerCap(AttachCapabilitiesEvent<PlayerEntity> event) {
-        event.addCapability(Recrafted.getResource("playercap"), new PlayerCapProvider(event.getObject()));
+    public static void attachPlayerCap(AttachCapabilitiesEvent<Entity> event) {
+        if(event.getObject() instanceof PlayerEntity) {
+            event.addCapability(Recrafted.getResource("playercap"), new PlayerCapProvider((PlayerEntity) event.getObject()));
+        }
     }
 
     @SubscribeEvent

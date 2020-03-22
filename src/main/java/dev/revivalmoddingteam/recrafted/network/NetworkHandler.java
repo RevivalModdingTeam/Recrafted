@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.network;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketForceChunkReload;
+import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncPlayerData;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketToggleDebug;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,6 +27,7 @@ public class NetworkHandler {
         register(CPacketForceChunkReload.class, new CPacketForceChunkReload());
         register(CPacketSyncWorldData.class, new CPacketSyncWorldData(null));
         register(CPacketToggleDebug.class, new CPacketToggleDebug());
+        register(CPacketSyncPlayerData.class, new CPacketSyncPlayerData());
         Recrafted.log.debug("Registered {} packets", packetID);
     }
 

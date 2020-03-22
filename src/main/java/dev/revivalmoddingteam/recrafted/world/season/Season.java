@@ -10,7 +10,6 @@ public class Season {
 
     private final byte index;
     private final int waterColorMultipler, foliageColorMultiplier;
-    private final Consumer<World> tickHandler;
     private final float tempModifier;
 
     public final int mildSeasonStart, mildSeasonEnd;
@@ -19,16 +18,11 @@ public class Season {
         this.index = builder.id;
         this.waterColorMultipler = builder.waterColor;
         this.foliageColorMultiplier = builder.foliageColor;
-        this.tickHandler = builder.tickHandler;
         this.tempModifier = builder.temperatureModifier;
 
         int diff = RecraftedConfig.getSeasonConfiguration().yearCycle.get() / 4;
         mildSeasonStart = diff * index + 1;
         mildSeasonEnd = diff * (index + 1) - 1;
-    }
-
-    public void tick(World world) {
-        this.tickHandler.accept(world);
     }
 
     public int getWaterColorMultipler() {
@@ -74,7 +68,6 @@ public class Season {
         private float temperatureModifier;
         private int waterColor;
         private int foliageColor;
-        private Consumer<World> tickHandler;
 
         private SeasonBuilder() {}
 
@@ -90,11 +83,6 @@ public class Season {
         public SeasonBuilder colors(int waterColor, int foliageColor) {
             this.waterColor = waterColor;
             this.foliageColor = foliageColor;
-            return this;
-        }
-
-        public SeasonBuilder onTick(final Consumer<World> worldConsumer) {
-            this.tickHandler = worldConsumer;
             return this;
         }
 

@@ -28,7 +28,6 @@ public class SeasonData {
             NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), event.world);
             NetworkHandler.sendToAllClients(new CPacketSyncWorldData(WorldCapFactory.getData(event.world).serializeNBT()), event.world);
         }
-        season.tick(event.world);
     }
 
     public void setSeasonID(int id, World world) {

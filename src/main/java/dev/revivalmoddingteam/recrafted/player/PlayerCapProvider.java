@@ -1,5 +1,6 @@
 package dev.revivalmoddingteam.recrafted.player;
 
+import dev.revivalmoddingteam.recrafted.player.objects.PlayerCapDummy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -16,11 +17,12 @@ public class PlayerCapProvider implements ICapabilitySerializable<CompoundNBT> {
     @CapabilityInject(IPlayerCap.class)
     public static Capability<IPlayerCap> CAP = null;
     private LazyOptional<IPlayerCap> instance = LazyOptional.of(CAP::getDefaultInstance);
+    protected static PlayerCapDummy capDummy = new PlayerCapDummy();
 
     public PlayerCapProvider() {}
 
     public PlayerCapProvider(PlayerEntity playerEntity) {
-        this.instance = LazyOptional.of(PlayerCapFactory::new);
+        this.instance = LazyOptional.of(() -> new PlayerCapFactory(playerEntity));
     }
 
     @Nonnull
