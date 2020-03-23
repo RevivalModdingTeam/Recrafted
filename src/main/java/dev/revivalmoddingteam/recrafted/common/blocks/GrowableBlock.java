@@ -1,11 +1,10 @@
 package dev.revivalmoddingteam.recrafted.common.blocks;
 
+import dev.revivalmoddingteam.recrafted.Recrafted;
+import dev.revivalmoddingteam.recrafted.handler.Registry;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.season.Season;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -15,22 +14,46 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class GrowableBlock extends RecraftedBlock {
+public class GrowableBlock extends BushBlock implements Plant {
 
     public static final IntegerProperty AGE_PROPERTY = IntegerProperty.create("age", 0, 3);
     public static final BooleanProperty FROZEN_PROPERTY = BooleanProperty.create("frozen");
 
     protected final Supplier<ItemStack> growableItem;
+    private final boolean requiresFarmland;
 
     public GrowableBlock(String key, Supplier<ItemStack> growableItem) {
-        super(key, Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
+        this(key, false, growableItem);
+    }
+
+    public GrowableBlock(String key, boolean requiresFarmland, Supplier<ItemStack> growableItem) {
+        super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
+        this.setRegistryName(Recrafted.getResource(key));
         this.growableItem = growableItem;
+        this.requiresFarmland = requiresFarmland;
         setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
+        Registry.EventListener.registerBlockItem(this);
+    }
+
+    @Override
+    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return requiresFarmland ? state.getBlock() == Blocks.FARMLAND : super.isValidGround(state, worldIn, pos);
+    }
+
+    @Override
+    public boolean canPlaceOn(World world, BlockState state, BlockPos pos) {
+        return isValidGround(state, world, pos);
+    }
+
+    @Override
+    public void createPlant(World world, BlockPos pos) {
+        world.setBlockState(pos, getDefaultState());
     }
 
     @Override

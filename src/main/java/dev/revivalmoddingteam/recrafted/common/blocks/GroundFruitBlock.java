@@ -1,6 +1,5 @@
 package dev.revivalmoddingteam.recrafted.common.blocks;
 
-
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.handler.Registry;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
@@ -23,7 +22,7 @@ import net.minecraft.world.World;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class GroundFruitBlock extends BushBlock {
+public class GroundFruitBlock extends BushBlock implements Plant {
 
     public static final IntegerProperty PLANT_AGE = IntegerProperty.create("plant", 0, 3);
     public static final IntegerProperty FRUIT_AGE = IntegerProperty.create("fruit", 0, 3);
@@ -42,7 +41,7 @@ public class GroundFruitBlock extends BushBlock {
         this.stackSupplier = stackSupplier;
         this.requiresFarmland = requiresFarmland;
         this.setDefaultState(this.getStateContainer().getBaseState().with(PLANT_AGE, 0).with(FRUIT_AGE, 0).with(IS_FROZEN, false));
-        Registry.EventListener.registerBlockItem(this);
+        Registry.EventListener.registerBlockItemNoTab(this);
     }
 
     @Override
@@ -51,24 +50,34 @@ public class GroundFruitBlock extends BushBlock {
     }
 
     @Override
+    public boolean canPlaceOn(World world, BlockState state, BlockPos pos) {
+        return isValidGround(state, world, pos);
+    }
+
+    @Override
+    public void createPlant(World world, BlockPos pos) {
+        world.setBlockState(pos, getDefaultState());
+    }
+
+    @Override
     public void randomTick(BlockState state, World worldIn, BlockPos pos, Random random) {
         Season season = WorldCapFactory.getData(worldIn).getSeasonData().getSeason();
-        if(!season.isWinter()) {
-            if(isFrozen(state)) {
-                if(random.nextFloat() <= 0.15F) {
+        if (!season.isWinter()) {
+            if (isFrozen(state)) {
+                if (random.nextFloat() <= 0.15F) {
                     worldIn.setBlockState(pos, state.with(IS_FROZEN, false).with(FRUIT_AGE, 0));
                 }
-            } else if(isPlantMature(state)) {
-                if(!isFruitMature(state) && random.nextFloat() <= 0.1F) {
+            } else if (isPlantMature(state)) {
+                if (!isFruitMature(state) && random.nextFloat() <= 0.1F) {
                     addAgeProperty(FRUIT_AGE, state, worldIn, pos);
                 }
             } else {
-                if(random.nextFloat() <= 0.1F) {
+                if (random.nextFloat() <= 0.1F) {
                     addAgeProperty(PLANT_AGE, state, worldIn, pos);
                 }
             }
         } else {
-            if(!isFrozen(state) && random.nextFloat() <= 0.15F) {
+            if (!isFrozen(state) && random.nextFloat() <= 0.15F) {
                 worldIn.setBlockState(pos, state.with(IS_FROZEN, true));
             }
         }
@@ -77,21 +86,23 @@ public class GroundFruitBlock extends BushBlock {
 
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if(!worldIn.isRemote) {
-            if(!isFrozen(state) && isFruitMature(state)) {
+        if (!worldIn.isRemote) {
+            if (!isFrozen(state) && isFruitMature(state)) {
                 ItemStack stack = stackSupplier.get();
-                stack.setCount(1 + worldIn.rand.nextInt(stack.getCount()));
+                boolean harvestSeason = WorldCapFactory.getData(worldIn).getSeasonData().getSeason().isFall();
+                stack.setCount(Math.min(64, 1 + worldIn.rand.nextInt(harvestSeason ? stack.getCount() * 2 : stack.getCount())));
                 worldIn.addEntity(new ItemEntity(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack));
                 worldIn.setBlockState(pos, state.with(FRUIT_AGE, 0));
+                return true;
             }
         }
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+        return false;
     }
 
     @Override
     public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
-        if(!isFrozen(state) && isFruitMature(state)) {
-            if(!worldIn.getWorld().isRemote) {
+        if (!isFrozen(state) && isFruitMature(state)) {
+            if (!worldIn.getWorld().isRemote) {
                 ItemStack stack = stackSupplier.get();
                 stack.setCount(1 + worldIn.getWorld().rand.nextInt(stack.getCount()));
                 worldIn.addEntity(new ItemEntity(worldIn.getWorld(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack));
@@ -100,7 +111,7 @@ public class GroundFruitBlock extends BushBlock {
     }
 
     public void addAgeProperty(IntegerProperty property, BlockState state, World world, BlockPos pos) {
-        if(state.get(property) < 3) {
+        if (state.get(property) < 3) {
             world.setBlockState(pos, state.with(property, state.get(property) + 1));
         }
     }

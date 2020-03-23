@@ -37,6 +37,7 @@ public class Recrafted {
         Registry.REntityTypes.TYPES.register(eventBus);
         Registry.RContainerTypes.TYPES.register(eventBus);
         Registry.RTileEntityTypes.TYPES.register(eventBus);
+        Registry.RFeatures.FEATURES.register(eventBus);
 
         eventBus.addListener(this::setupCommon);
         eventBus.addListener(this::setupClient);
