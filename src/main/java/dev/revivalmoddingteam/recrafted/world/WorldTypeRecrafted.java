@@ -9,7 +9,7 @@ import net.minecraft.world.gen.OverworldGenSettings;
 public class WorldTypeRecrafted extends WorldType {
 
     public WorldTypeRecrafted() {
-        super("realistic");
+        super("recrafted");
     }
 
     @Override

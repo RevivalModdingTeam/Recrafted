@@ -100,7 +100,7 @@ public class Registry {
                     new RecraftedFood("blueberry", new RecraftedFood.Stats().food(1, 0.2F)),
                     new RecraftedFood("raspberry", new RecraftedFood.Stats().food(1, 0.3F)),
                     new RecraftedFood("blackberry", new RecraftedFood.Stats().food(1, 0.3F)),
-                    new RecraftedFood("snowberry", new RecraftedFood.Stats().food(1, 0.2F).effect(75, () -> new EffectInstance(Effects.POISON, 200)).alwaysUseable()),
+                    new RecraftedFood("snowberry", new RecraftedFood.Stats().food(1, 0.2F).effect(0.75f, () -> new EffectInstance(Effects.POISON, 200)).alwaysUseable()),
                     new RecraftedFood("strawberry", new RecraftedFood.Stats().food(2, 0.4F).water(1).alwaysUseable()),
 
                     new PlantableItem("strawberry_seeds", () -> RBlocks.STRAWBERRY_PLANT)

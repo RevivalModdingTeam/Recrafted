@@ -4,6 +4,8 @@ import dev.revivalmoddingteam.recrafted.common.ItemGroups;
 import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -13,9 +15,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -70,17 +77,30 @@ public class RecraftedFood extends RecraftedItem {
         return stack;
     }
 
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        if(!Screen.hasShiftDown()) {
+            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + "Hold SHIFT for nutrition information"));
+        } else {
+            stats.display(tooltip);
+        }
+    }
+
     public static class Stats {
 
+        private static DecimalFormat format = new DecimalFormat("###.#");
         private int food = 0;
         private float foodSaturation = 0.0F;
         private int thirstLevel = 0;
         private float energy = 0.0F;
         private boolean fastUse = false;
         private boolean alwaysUseable = false;
-        private List<Pair<Integer, Supplier<EffectInstance>>> extraEffects;
+        private List<Pair<Float, Supplier<EffectInstance>>> extraEffects;
 
-        public Stats() {
+        public void display(List<ITextComponent> list) {
+            if(food > 0) list.add(new StringTextComponent(TextFormatting.GREEN + "Food: +" + food));
+            if(thirstLevel > 0) list.add(new StringTextComponent(TextFormatting.AQUA + "Water: +" + thirstLevel));
+            if(energy > 0) list.add(new StringTextComponent(TextFormatting.YELLOW + "Energy: +" + format.format(energy)));
         }
 
         public Stats food(int level, float saturation) {
@@ -109,9 +129,9 @@ public class RecraftedFood extends RecraftedItem {
             return this;
         }
 
-        public Stats effect(int chance, Supplier<EffectInstance> effectFactory) {
+        public Stats effect(float chance, Supplier<EffectInstance> effectFactory) {
             if(extraEffects == null) extraEffects = new ArrayList<>();
-            extraEffects.add(Pair.of(chance, effectFactory));
+            extraEffects.add(Pair.of(Math.min(0.1F, Math.max(1.0F, chance)), effectFactory));
             return this;
         }
 
@@ -146,8 +166,8 @@ public class RecraftedFood extends RecraftedItem {
         public void applyEffects(LivingEntity entity) {
             if(!hasPotionEffects()) return;
             Random random = new Random();
-            for(Pair<Integer, Supplier<EffectInstance>> pair : extraEffects) {
-                if(random.nextFloat() <= pair.getLeft() / 100f) {
+            for(Pair<Float, Supplier<EffectInstance>> pair : extraEffects) {
+                if(random.nextFloat() <= pair.getLeft()) {
                     entity.addPotionEffect(pair.getRight().get());
                 }
             }

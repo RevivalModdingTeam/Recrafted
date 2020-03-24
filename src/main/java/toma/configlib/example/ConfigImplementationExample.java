@@ -10,8 +10,7 @@ import toma.configlib.config.types.IConfigType;
 import toma.configlib.config.types.primitives.ConfigTypeString;
 import toma.configlib.example.objects.ConfigObjectExample;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * The main config class, must implement the {@link IConfig} interface in order to be registered
@@ -19,6 +18,9 @@ import java.util.Collections;
  * @author Toma, 08.03.2020
  */
 public class ConfigImplementationExample implements IConfig {
+
+    /** List of all listeners. All listeners are called when config is changed or during loading */
+    private static List<Runnable> listeners = new ArrayList<>();
 
     /** String object, to actually get it you need reference to this field and call {@link IConfigType#get()} in order to get the string */
     public static ConfigTypeString configurableString = ConfigTypeString.create("string", "Hello world!");
@@ -79,5 +81,11 @@ public class ConfigImplementationExample implements IConfig {
         configurableObject.deserialize(object);
         configurableDoubleList.deserialize(object);
         configurableObjectList.deserialize(object);
+    }
+
+    /** Returns collection of all listeners */
+    @Override
+    public Collection<Runnable> getListeners() {
+        return listeners;
     }
 }

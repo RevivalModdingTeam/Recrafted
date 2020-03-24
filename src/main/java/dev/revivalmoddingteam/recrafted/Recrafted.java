@@ -38,7 +38,6 @@ public class Recrafted {
 
         eventBus.addListener(this::setupCommon);
         eventBus.addListener(this::setupClient);
-        eventBus.register(this);
 
         ConfigLib.registerCustomConfigMod(getClass(), new RecraftedConfig());
     }

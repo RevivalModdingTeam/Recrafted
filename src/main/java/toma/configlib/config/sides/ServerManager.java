@@ -53,6 +53,7 @@ public class ServerManager extends Manager {
                         ConfigLib.log.fatal("Exception occurred while parsing config for mod {}", modid);
                         e.printStackTrace();
                     }
+                    implementation.getListeners().forEach(Runnable::run);
                     JsonObject _c = new JsonObject();
                     DisplayEntry.Obj _cEntry = new DisplayEntry.Obj(_c);
                     JsonObject _s = new JsonObject();

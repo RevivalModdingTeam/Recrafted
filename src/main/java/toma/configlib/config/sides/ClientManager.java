@@ -53,6 +53,7 @@ public class ClientManager extends Manager {
                         ConfigLib.log.fatal("Exception occurred while parsing config for mod {}", modid);
                         e.printStackTrace();
                     }
+                    config.getListeners().forEach(Runnable::run);
                     JsonObject _c = new JsonObject();
                     DisplayEntry.Obj clientEntry = new DisplayEntry.Obj(_c);
                     config.serializeClient(clientEntry);

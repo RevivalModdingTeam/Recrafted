@@ -1,3 +1,15 @@
 {
-    "recrafted.damagetype.thirst": "%1$s has died from dehydration"
+    "item.recrafted.blueberry": "Blueberry",
+    "item.recrafted.blackberry": "Blackberry",
+    "item.recrafted.raspberry": "Raspberry",
+    "item.recrafted.snowberry": "Snowberry",
+    "item.recrafted.strawberry": "Strawberry",
+    "item.recrafted.strawberry_seeds": "Strawberry Seeds",
+
+    "itemGroup.r_blocks": "Recrafted: Blocks",
+    "itemGroup.r_items": "Recrafted: Items",
+
+    "recrafted.damagetype.thirst": "%1$s has died from dehydration",
+
+    "generator.recrafted": "Recrafted"
 }

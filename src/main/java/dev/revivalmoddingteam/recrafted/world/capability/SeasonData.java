@@ -1,6 +1,5 @@
 package dev.revivalmoddingteam.recrafted.world.capability;
 
-import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketForceChunkReload;
