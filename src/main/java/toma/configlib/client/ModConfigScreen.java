@@ -51,6 +51,7 @@ public class ModConfigScreen extends Screen {
             config.deserializeClient(client);
             config.deserialize(common);
             object.updateDataObject(clientObj, commonObj, jsonObject);
+            config.getListeners().forEach(Runnable::run);
         } catch (IOException e) {
             e.printStackTrace();
         }

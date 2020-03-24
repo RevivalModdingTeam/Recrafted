@@ -1,7 +1,6 @@
 package dev.revivalmoddingteam.recrafted;
 
 import dev.revivalmoddingteam.recrafted.client.render.ClientManager;
-import dev.revivalmoddingteam.recrafted.common.command.RecraftedCommand;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.handler.Registry;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
@@ -15,11 +14,9 @@ import dev.revivalmoddingteam.recrafted.world.capability.WorldCapStorage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

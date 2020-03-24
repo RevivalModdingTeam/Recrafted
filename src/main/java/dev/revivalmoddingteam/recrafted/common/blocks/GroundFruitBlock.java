@@ -15,6 +15,9 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -42,6 +45,11 @@ public class GroundFruitBlock extends BushBlock implements Plant {
         this.requiresFarmland = requiresFarmland;
         this.setDefaultState(this.getStateContainer().getBaseState().with(PLANT_AGE, 0).with(FRUIT_AGE, 0).with(IS_FROZEN, false));
         Registry.EventListener.registerBlockItemNoTab(this);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return VoxelShapes.empty();
     }
 
     @Override
