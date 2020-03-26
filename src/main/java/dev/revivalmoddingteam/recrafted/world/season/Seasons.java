@@ -17,21 +17,25 @@ public class Seasons {
 
     public static void register() {
         REGISTRY[0] = Season.SeasonBuilder.create()
+                .key("spring")
                 .id(0)
                 .colors(0x2F88F0, 0x00CD21)
                 .tempModifier(0.2F)
                 .build();
         REGISTRY[1] = Season.SeasonBuilder.create()
+                .key("summer")
                 .id(1)
                 .colors(0x34D3EF, 0x529300)
                 .tempModifier(0.4F)
                 .build();
         REGISTRY[2] = Season.SeasonBuilder.create()
+                .key("fall")
                 .id(2)
                 .colors(0x005DFF, 0xA74200)
                 .tempModifier(0.05F)
                 .build();
         REGISTRY[3] = Season.SeasonBuilder.create()
+                .key("winter")
                 .id(3)
                 .colors(0x2B8EB5, 0x36B569)
                 .tempModifier(-0.8F)

@@ -11,5 +11,12 @@
 
     "death.attack.recrafted.damagetype.thirst": "%1$s has died from dehydration",
 
+    "effect.recrafted.thirst": "Thirst",
+
+    "season.spring": "Spring",
+    "season.summer": "Summer",
+    "season.fall": "Fall",
+    "season.winter": "Winter",
+
     "generator.recrafted": "Recrafted"
 }

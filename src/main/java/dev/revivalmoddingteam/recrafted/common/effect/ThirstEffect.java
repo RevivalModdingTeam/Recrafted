@@ -10,7 +10,7 @@ import net.minecraft.potion.EffectType;
 public class ThirstEffect extends Effect {
 
     public ThirstEffect() {
-        super(EffectType.HARMFUL, 0x00FFAA);
+        super(EffectType.HARMFUL, 0x00FF33);
     }
 
     @Override

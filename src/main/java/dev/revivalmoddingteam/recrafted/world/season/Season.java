@@ -2,12 +2,15 @@ package dev.revivalmoddingteam.recrafted.world.season;
 
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
 public class Season {
 
+    private final ITextComponent name;
     private final byte index;
     private final int waterColorMultipler, foliageColorMultiplier;
     private final float tempModifier;
@@ -15,6 +18,7 @@ public class Season {
     public final int mildSeasonStart, mildSeasonEnd;
 
     public Season(SeasonBuilder builder) {
+        this.name = new TranslationTextComponent("season." + builder.key);
         this.index = builder.id;
         this.waterColorMultipler = builder.waterColor;
         this.foliageColorMultiplier = builder.foliageColor;
@@ -62,9 +66,14 @@ public class Season {
         return index == 3;
     }
 
+    public ITextComponent getName() {
+        return name;
+    }
+
     protected static class SeasonBuilder {
 
         private byte id;
+        private String key;
         private float temperatureModifier;
         private int waterColor;
         private int foliageColor;
@@ -73,6 +82,11 @@ public class Season {
 
         public static SeasonBuilder create() {
             return new SeasonBuilder();
+        }
+
+        public SeasonBuilder key(String key) {
+            this.key = key;
+            return this;
         }
 
         public SeasonBuilder id(int id) {
