@@ -40,7 +40,7 @@ public class GroundFruitBlock extends BushBlock implements Plant {
 
     public GroundFruitBlock(String key, boolean requiresFarmland, Supplier<ItemStack> stackSupplier) {
         super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
-        this.setRegistryName(Recrafted.getResource(key));
+        this.setRegistryName(Recrafted.makeResource(key));
         this.stackSupplier = stackSupplier;
         this.requiresFarmland = requiresFarmland;
         this.setDefaultState(this.getStateContainer().getBaseState().with(PLANT_AGE, 0).with(FRUIT_AGE, 0).with(IS_FROZEN, false));

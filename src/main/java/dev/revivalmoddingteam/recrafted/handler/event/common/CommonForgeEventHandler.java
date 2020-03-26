@@ -30,6 +30,8 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Recrafted.MODID)
 public class CommonForgeEventHandler {
 
+    public static long tickCounter;
+
     // TODO realistic item entities
     //@SubscribeEvent
     public static void entitySpawn(EntityJoinWorldEvent event) {
@@ -51,6 +53,7 @@ public class CommonForgeEventHandler {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
+        ++tickCounter;
         WorldCapFactory.getData(event.world).tickWorld(event);
     }
 
@@ -59,19 +62,19 @@ public class CommonForgeEventHandler {
         if(event.phase == TickEvent.Phase.END) {
             updateScheduler();
             IPlayerCap cap = PlayerCapFactory.get(event.player);
-            cap.onTick();
+            cap.onTick(tickCounter);
         }
     }
 
     @SubscribeEvent
     public static void attachWorldCap(AttachCapabilitiesEvent<World> event) {
-        event.addCapability(Recrafted.getResource("worldcap"), new WorldCapProvider());
+        event.addCapability(Recrafted.makeResource("worldcap"), new WorldCapProvider());
     }
 
     @SubscribeEvent
     public static void attachPlayerCap(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof PlayerEntity) {
-            event.addCapability(Recrafted.getResource("playercap"), new PlayerCapProvider((PlayerEntity) event.getObject()));
+            event.addCapability(Recrafted.makeResource("playercap"), new PlayerCapProvider((PlayerEntity) event.getObject()));
         }
     }
 

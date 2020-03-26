@@ -29,8 +29,8 @@ public class PlayerCapFactory implements IPlayerCap {
     }
 
     @Override
-    public void onTick() {
-        playerStatData.tickPlayer(playerEntity);
+    public void onTick(long ticks) {
+        playerStatData.tickPlayer(playerEntity, ticks);
     }
 
     @Override

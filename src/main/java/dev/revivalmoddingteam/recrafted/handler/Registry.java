@@ -3,6 +3,8 @@ package dev.revivalmoddingteam.recrafted.handler;
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
 import dev.revivalmoddingteam.recrafted.common.blocks.GroundFruitBlock;
+import dev.revivalmoddingteam.recrafted.common.blocks.GrowableBlock;
+import dev.revivalmoddingteam.recrafted.common.effect.ThirstEffect;
 import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.common.items.PlantableItem;
 import dev.revivalmoddingteam.recrafted.common.items.RecraftedFood;
@@ -15,6 +17,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
@@ -24,7 +27,10 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.*;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +47,16 @@ public class Registry {
         public static final RecraftedFood BLACKBERRY = null;
         public static final RecraftedFood SNOWBERRY = null;
         public static final RecraftedFood STRAWBERRY = null;
-
         // seeds
         public static final PlantableItem STRAWBERRY_SEEDS = null;
     }
 
     @ObjectHolder(Recrafted.MODID)
     public static class RBlocks {
+        public static final GrowableBlock BLUEBERRY_BUSH = null;
+        public static final GrowableBlock RASPBERRY_BUSH = null;
+        public static final GrowableBlock BLACKBERRY_BUSH = null;
+        public static final GrowableBlock SNOWBERRY_BUSH = null;
         public static final GroundFruitBlock STRAWBERRY_PLANT = null;
     }
 
@@ -56,7 +65,7 @@ public class Registry {
         public static final RegistryObject<EntityType<Entity>> RECRAFTED_ITEM = register("item", builder(RecraftedItemEntity::new, EntityClassification.MISC).setUpdateInterval(2).setTrackingRange(32).disableSummoning());
 
         private static <T extends Entity> RegistryObject<EntityType<T>> register(String name, EntityType.Builder<T> builder) {
-            return TYPES.register(name, () -> builder.build(Recrafted.getResource(name).toString()));
+            return TYPES.register(name, () -> builder.build(Recrafted.makeResource(name).toString()));
         }
 
         private static <T extends Entity> EntityType.Builder<T> builder(EntityType.IFactory<T> factory, EntityClassification classification) {
@@ -81,6 +90,11 @@ public class Registry {
         }
     }
 
+    @ObjectHolder(Recrafted.MODID)
+    public static class REffects {
+        public static final ThirstEffect THIRST = null;
+    }
+
     @Mod.EventBusSubscriber(modid = Recrafted.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static final class EventListener {
 
@@ -89,7 +103,11 @@ public class Registry {
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(
-                new GroundFruitBlock("strawberry_plant", true, () -> new ItemStack(RItems.STRAWBERRY, 3))
+                    new GrowableBlock("blueberry_bush", () -> new ItemStack(RItems.BLUEBERRY, 3)),
+                    new GrowableBlock("raspberry_bush", () -> new ItemStack(RItems.RASPBERRY, 3)),
+                    new GrowableBlock("blackberry_bush", () -> new ItemStack(RItems.BLACKBERRY, 3)),
+                    new GrowableBlock("snowberry_bush", () -> new ItemStack(RItems.SNOWBERRY, 3)),
+                    new GroundFruitBlock("strawberry_plant", true, () -> new ItemStack(RItems.STRAWBERRY, 3))
             );
         }
 
@@ -100,13 +118,20 @@ public class Registry {
                     new RecraftedFood("blueberry", new RecraftedFood.Stats().food(1, 0.2F)),
                     new RecraftedFood("raspberry", new RecraftedFood.Stats().food(1, 0.3F)),
                     new RecraftedFood("blackberry", new RecraftedFood.Stats().food(1, 0.3F)),
-                    new RecraftedFood("snowberry", new RecraftedFood.Stats().food(1, 0.2F).effect(0.75f, () -> new EffectInstance(Effects.POISON, 200)).alwaysUseable()),
-                    new RecraftedFood("strawberry", new RecraftedFood.Stats().food(2, 0.4F).water(1).alwaysUseable()),
+                    new RecraftedFood("snowberry", new RecraftedFood.Stats().food(1, 0.2F).effect(0.75f, () -> new EffectInstance(Effects.POISON, 200))),
+                    new RecraftedFood("strawberry", new RecraftedFood.Stats().food(1, 0.6F)),
 
                     new PlantableItem("strawberry_seeds", () -> RBlocks.STRAWBERRY_PLANT)
             );
             BLOCK_ITEM_LIST.stream().filter(Objects::nonNull).forEach(registry::register);
             BLOCK_ITEM_LIST = null;
+        }
+
+        @SubscribeEvent
+        public static void registerEffects(RegistryEvent.Register<Effect> event) {
+            event.getRegistry().registerAll(
+                    new ThirstEffect().setRegistryName(Recrafted.makeResource("thirst"))
+            );
         }
 
         public static void registerBlockItem(BlockItem blockItem) {

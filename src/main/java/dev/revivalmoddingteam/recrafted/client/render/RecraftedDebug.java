@@ -1,7 +1,7 @@
 package dev.revivalmoddingteam.recrafted.client.render;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
-import dev.revivalmoddingteam.recrafted.util.helper.TemperatureHelper;
+import dev.revivalmoddingteam.recrafted.util.helper.ModHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,7 +35,7 @@ public class RecraftedDebug {
             entryList.add(new DebugEntry<>("Recrafted debugger", (world, player) -> debugMode ? "Active" : "Disabled"));
             entryList.add(new DebugEntry<>("Season", (world, player) -> WorldCapFactory.getData(world).getSeasonData().getSeason().getSeasonIndex()));
             entryList.add(new DebugEntry<>("Biome temp", (world, player) -> world.getBiome(player.getPosition()).getTemperature(player.getPosition())));
-            entryList.add(new DebugEntry<>("Actual temp", (world, player) -> TemperatureHelper.getTemperatureAt(world, player.getPosition()) * 20));
+            entryList.add(new DebugEntry<>("Actual temp", (world, player) -> ModHelper.getTemperatureAt(world, player.getPosition()) * 20));
         } else entryList = null;
     }
 

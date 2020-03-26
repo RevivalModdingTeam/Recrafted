@@ -12,7 +12,7 @@ public class PlayerStatData {
     private float stamina = 50.0F;
     private float maxStamina = 50.0F;
 
-    public void tickPlayer(PlayerEntity player) {
+    public void tickPlayer(PlayerEntity player, long ticks) {
         // thirst
         if(player.world.isRemote) return;
         if(player.isSprinting()) {

@@ -2,7 +2,10 @@ package dev.revivalmoddingteam.recrafted.handler.event.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import dev.revivalmoddingteam.recrafted.Recrafted;
+import dev.revivalmoddingteam.recrafted.handler.Registry;
 import dev.revivalmoddingteam.recrafted.handler.event.Action;
+import dev.revivalmoddingteam.recrafted.handler.event.common.CommonForgeEventHandler;
+import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
 import net.minecraft.client.Minecraft;
@@ -10,6 +13,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -23,12 +27,21 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Recrafted.MODID, value = Dist.CLIENT)
 public class ClientForgeEventHandler {
 
-    private static final ResourceLocation OVERLAYS_X8 = Recrafted.getResource("textures/overlay/overlays_x8.png");
-    private static final ResourceLocation OVERLAYS_X16 = Recrafted.getResource("textures/overlay/overlays_x16.png");
+    private static final ResourceLocation OVERLAYS_X8 = Recrafted.makeResource("textures/overlay/overlays_x8.png");
+    private static final ResourceLocation OVERLAYS_X16 = Recrafted.makeResource("textures/overlay/overlays_x16.png");
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
+            Minecraft mc = Minecraft.getInstance();
+            PlayerEntity player = mc.player;
+            if(player != null) {
+                ++CommonForgeEventHandler.tickCounter;
+                IPlayerCap cap = PlayerCapFactory.get(player);
+                if(player.isSprinting() && cap.getStats().getThirstLevel() <= 6) {
+                    player.setSprinting(false);
+                }
+            }
             updateScheduler();
         }
     }
@@ -45,17 +58,17 @@ public class ClientForgeEventHandler {
             PlayerStatData stats = PlayerCapFactory.get(player).getStats();
             int thirstLevel = stats.getThirstLevel();
             int left = event.getWindow().getScaledWidth() / 2 + 10;
-            // TODO move up when player is under water
-            int top = event.getWindow().getScaledHeight() - 49;
+            int top = event.getWindow().getScaledHeight() - (player.areEyesInFluid(FluidTags.WATER) || player.getAir() < 300 ? 57 : 49);
+            int atlastX = player.getActivePotionEffect(Registry.REffects.THIRST) != null ? 3 : 0;
             for(int i = 1; i <= 10; i++) {
                 int pos = i * 2;
                 int j = 10 - i;
                 if(thirstLevel >= pos) {
-                    x8_blit(left + 8 * j, top, 0, 0);
+                    x8_blit(left + 8 * j, top, atlastX, 0);
                 } else if(pos - thirstLevel == 1) {
-                    x8_blit(left + 8 * j, top, 1, 0);
+                    x8_blit(left + 8 * j, top, atlastX + 1, 0);
                 } else {
-                    x8_blit(left + 8 * j, top, 2, 0);
+                    x8_blit(left + 8 * j, top, atlastX + 2, 0);
                 }
             }
         }

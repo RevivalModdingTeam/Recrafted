@@ -53,7 +53,7 @@ public class Recrafted {
         worldTypeRecrafted = new WorldTypeRecrafted();
     }
 
-    public static ResourceLocation getResource(String path) {
+    public static ResourceLocation makeResource(String path) {
         return new ResourceLocation(MODID, path);
     }
 }

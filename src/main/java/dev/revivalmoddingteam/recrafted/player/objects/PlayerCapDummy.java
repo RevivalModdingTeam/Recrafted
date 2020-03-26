@@ -14,7 +14,7 @@ public class PlayerCapDummy implements IPlayerCap {
     }
 
     @Override
-    public void onTick() {
+    public void onTick(long ticks) {
 
     }
 

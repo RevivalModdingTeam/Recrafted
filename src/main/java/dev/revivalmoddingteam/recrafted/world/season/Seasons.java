@@ -1,6 +1,6 @@
 package dev.revivalmoddingteam.recrafted.world.season;
 
-import dev.revivalmoddingteam.recrafted.util.helper.ColorHelper;
+import dev.revivalmoddingteam.recrafted.util.helper.ModHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
@@ -47,7 +47,7 @@ public class Seasons {
         int baseColor = GrassColors.get(0.5D, 1.0D);
         if (world == null) return baseColor;
         Season season = WorldCapFactory.getData(world).getSeasonData().getSeason();
-        return ColorHelper.inv_mix(enviromentBlockReader.getBiome(pos).getGrassColor(pos), season.getFoliageColorMultiplier());
+        return ModHelper.inv_mix(enviromentBlockReader.getBiome(pos).getGrassColor(pos), season.getFoliageColorMultiplier());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -56,6 +56,6 @@ public class Seasons {
             return FoliageColors.getDefault();
         }
         ClientWorld world = Minecraft.getInstance().world;
-        return ColorHelper.inv_mix(enviromentBlockReader.getBiome(pos).getFoliageColor(pos), WorldCapFactory.getData(world).getSeasonData().getSeason().getFoliageColorMultiplier());
+        return ModHelper.inv_mix(enviromentBlockReader.getBiome(pos).getFoliageColor(pos), WorldCapFactory.getData(world).getSeasonData().getSeason().getFoliageColorMultiplier());
     }
 }

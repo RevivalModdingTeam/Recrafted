@@ -14,6 +14,9 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -27,6 +30,7 @@ public class GrowableBlock extends BushBlock implements Plant {
 
     protected final Supplier<ItemStack> growableItem;
     private final boolean requiresFarmland;
+    private boolean emptyShape;
 
     public GrowableBlock(String key, Supplier<ItemStack> growableItem) {
         this(key, false, growableItem);
@@ -34,11 +38,21 @@ public class GrowableBlock extends BushBlock implements Plant {
 
     public GrowableBlock(String key, boolean requiresFarmland, Supplier<ItemStack> growableItem) {
         super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
-        this.setRegistryName(Recrafted.getResource(key));
+        this.setRegistryName(Recrafted.makeResource(key));
         this.growableItem = growableItem;
         this.requiresFarmland = requiresFarmland;
         setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
         Registry.EventListener.registerBlockItem(this);
+    }
+
+    public GrowableBlock makePassable() {
+        this.emptyShape = true;
+        return this;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return emptyShape ? VoxelShapes.empty() : VoxelShapes.fullCube();
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface IPlayerCap extends INBTSerializable<CompoundNBT> {
 
     PlayerStatData getStats();
 
-    void onTick();
+    void onTick(long ticks);
 
     void syncToClient();
 

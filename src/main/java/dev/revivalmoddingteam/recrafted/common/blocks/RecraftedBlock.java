@@ -8,7 +8,7 @@ public class RecraftedBlock extends Block {
 
     public RecraftedBlock(String key, Block.Properties properties) {
         super(properties);
-        setRegistryName(Recrafted.getResource(key));
+        setRegistryName(Recrafted.makeResource(key));
         this.registerItemForBlock();
     }
 

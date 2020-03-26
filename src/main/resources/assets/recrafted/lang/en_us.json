@@ -9,7 +9,7 @@
     "itemGroup.r_blocks": "Recrafted: Blocks",
     "itemGroup.r_items": "Recrafted: Items",
 
-    "recrafted.damagetype.thirst": "%1$s has died from dehydration",
+    "death.attack.recrafted.damagetype.thirst": "%1$s has died from dehydration",
 
     "generator.recrafted": "Recrafted"
 }

@@ -7,6 +7,6 @@ public class RecraftedItem extends Item {
 
     public RecraftedItem(String key, Properties properties) {
         super(properties);
-        setRegistryName(Recrafted.getResource(key));
+        setRegistryName(Recrafted.makeResource(key));
     }
 }

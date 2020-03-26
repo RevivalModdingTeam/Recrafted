@@ -39,7 +39,7 @@ public class FruitLeavesBlock extends LeavesBlock {
 
     public FruitLeavesBlock(String key, Supplier<ItemStack> fruitFactory, Predicate<Season> dropFruit) {
         super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
-        setRegistryName(Recrafted.getResource(key));
+        setRegistryName(Recrafted.makeResource(key));
         setDefaultState(getStateContainer().getBaseState().with(DISTANCE, 7).with(PERSISTENT, false).with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
         this.fruitFactory = fruitFactory;
         this.seasonPredicate = dropFruit;

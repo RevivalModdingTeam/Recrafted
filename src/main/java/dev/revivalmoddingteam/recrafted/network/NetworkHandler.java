@@ -15,7 +15,7 @@ public class NetworkHandler {
 
     private static final String PROTOCOL_VERSION = "1";
     private static final SimpleChannel networkChannel = NetworkRegistry.ChannelBuilder
-            .named(Recrafted.getResource("main"))
+            .named(Recrafted.makeResource("main"))
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
