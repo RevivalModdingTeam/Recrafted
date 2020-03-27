@@ -1,7 +1,7 @@
 package dev.revivalmoddingteam.recrafted.common.items;
 
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
-import dev.revivalmoddingteam.recrafted.common.blocks.Plant;
+import dev.revivalmoddingteam.recrafted.common.blocks.plant.Plant;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;

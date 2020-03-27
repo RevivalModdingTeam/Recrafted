@@ -1,4 +1,4 @@
-package dev.revivalmoddingteam.recrafted.common.blocks;
+package dev.revivalmoddingteam.recrafted.common.blocks.plant;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.handler.Registry;
@@ -20,6 +20,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -28,19 +29,13 @@ public class GrowableBlock extends BushBlock implements Plant {
     public static final IntegerProperty AGE_PROPERTY = IntegerProperty.create("age", 0, 3);
     public static final BooleanProperty FROZEN_PROPERTY = BooleanProperty.create("frozen");
 
-    protected final Supplier<ItemStack> growableItem;
-    private final boolean requiresFarmland;
+    protected final Settings settings;
     private boolean emptyShape;
 
-    public GrowableBlock(String key, Supplier<ItemStack> growableItem) {
-        this(key, false, growableItem);
-    }
-
-    public GrowableBlock(String key, boolean requiresFarmland, Supplier<ItemStack> growableItem) {
+    public GrowableBlock(String key, Settings settings) {
         super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
         this.setRegistryName(Recrafted.makeResource(key));
-        this.growableItem = growableItem;
-        this.requiresFarmland = requiresFarmland;
+        this.settings = settings;
         setDefaultState(getStateContainer().getBaseState().with(AGE_PROPERTY, 0).with(FROZEN_PROPERTY, false));
         Registry.EventListener.registerBlockItem(this);
     }
@@ -57,7 +52,7 @@ public class GrowableBlock extends BushBlock implements Plant {
 
     @Override
     protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return requiresFarmland ? state.getBlock() == Blocks.FARMLAND : super.isValidGround(state, worldIn, pos);
+        return settings.farmlandRequired ? state.getBlock() == Blocks.FARMLAND : super.isValidGround(state, worldIn, pos);
     }
 
     @Override
@@ -77,7 +72,9 @@ public class GrowableBlock extends BushBlock implements Plant {
             if(!isMaxAge(state) && random.nextInt(10) == 0) {
                 worldIn.setBlockState(pos, state.with(AGE_PROPERTY, getCurrentAge(state) + 1));
             } else if(state.get(FROZEN_PROPERTY)) {
-                worldIn.setBlockState(pos, Blocks.DEAD_BUSH.getDefaultState(), 3);
+                if(worldIn.rand.nextFloat() <= settings.recoveryChance) {
+                    worldIn.setBlockState(pos, state.with(FROZEN_PROPERTY, false).with(AGE_PROPERTY, 0));
+                } else worldIn.setBlockState(pos, Blocks.DEAD_BUSH.getDefaultState());
             }
         } else {
             if(!state.get(FROZEN_PROPERTY) && random.nextInt(10) == 0) {
@@ -99,7 +96,7 @@ public class GrowableBlock extends BushBlock implements Plant {
         } else {
             if(!worldIn.isRemote && isMaxAge(state)) {
                 Season season = WorldCapFactory.getData(worldIn).getSeasonData().getSeason();
-                ItemStack stack = growableItem.get();
+                ItemStack stack = settings.product.get();
                 int droppedAmount = stack.getCount();
                 if(season.isFall()) {
                     droppedAmount *= 2;
@@ -125,5 +122,27 @@ public class GrowableBlock extends BushBlock implements Plant {
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AGE_PROPERTY);
         builder.add(FROZEN_PROPERTY);
+    }
+
+    public static class Settings {
+
+        private boolean farmlandRequired;
+        private Supplier<ItemStack> product;
+        private float recoveryChance;
+
+        public Settings requiresFarmLand() {
+            this.farmlandRequired = true;
+            return this;
+        }
+
+        public Settings product(Supplier<ItemStack> product) {
+            this.product = Objects.requireNonNull(product);
+            return this;
+        }
+
+        public Settings recoveryChance(float recoveryChance) {
+            this.recoveryChance = recoveryChance;
+            return this;
+        }
     }
 }

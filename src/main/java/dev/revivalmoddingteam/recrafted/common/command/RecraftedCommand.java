@@ -31,7 +31,7 @@ public class RecraftedCommand {
         IWorldCap worldCap = WorldCapFactory.getData(world);
         worldCap.getSeasonData().setSeasonID(seasonID, world);
         worldCap.updateClients(world);
-        ctx.getSource().sendFeedback(new StringTextComponent("Season has been changed to " + Seasons.REGISTRY[seasonID].getName()), true);
+        ctx.getSource().sendFeedback(new StringTextComponent("Season has been changed to " + Seasons.REGISTRY[seasonID].getName().getFormattedText()), true);
         return seasonID;
     }
 

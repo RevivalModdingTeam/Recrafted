@@ -1,4 +1,4 @@
-package dev.revivalmoddingteam.recrafted.common.blocks;
+package dev.revivalmoddingteam.recrafted.common.blocks.plant;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

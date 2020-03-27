@@ -1,4 +1,4 @@
-package dev.revivalmoddingteam.recrafted.common.blocks;
+package dev.revivalmoddingteam.recrafted.common.blocks.plant;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.handler.Registry;

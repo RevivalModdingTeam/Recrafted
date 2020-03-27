@@ -2,8 +2,8 @@ package dev.revivalmoddingteam.recrafted.handler;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
-import dev.revivalmoddingteam.recrafted.common.blocks.GroundFruitBlock;
-import dev.revivalmoddingteam.recrafted.common.blocks.GrowableBlock;
+import dev.revivalmoddingteam.recrafted.common.blocks.plant.GroundFruitBlock;
+import dev.revivalmoddingteam.recrafted.common.blocks.plant.GrowableBlock;
 import dev.revivalmoddingteam.recrafted.common.effect.ThirstEffect;
 import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.common.items.PlantableItem;
@@ -103,10 +103,10 @@ public class Registry {
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(
-                    new GrowableBlock("blueberry_bush", () -> new ItemStack(RItems.BLUEBERRY, 3)),
-                    new GrowableBlock("raspberry_bush", () -> new ItemStack(RItems.RASPBERRY, 3)),
-                    new GrowableBlock("blackberry_bush", () -> new ItemStack(RItems.BLACKBERRY, 3)),
-                    new GrowableBlock("snowberry_bush", () -> new ItemStack(RItems.SNOWBERRY, 3)),
+                    new GrowableBlock("blueberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(0.8F)),
+                    new GrowableBlock("raspberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(0.8F)),
+                    new GrowableBlock("blackberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(0.75F)),
+                    new GrowableBlock("snowberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(1.0F)),
                     new GroundFruitBlock("strawberry_plant", true, () -> new ItemStack(RItems.STRAWBERRY, 3))
             );
         }
