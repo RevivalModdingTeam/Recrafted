@@ -14,6 +14,7 @@ public class RecraftedConfig implements IConfig {
 
     private static final List<Runnable> listenerList = new ArrayList<>();
     public static ConfigTypeObject<SeasonConfig> seasonConfig = ConfigTypeObject.create("Seasons", new SeasonConfig());
+    public static ConfigTypeObject<WorldConfig> worldConfig = ConfigTypeObject.create("World", new WorldConfig());
 
     public RecraftedConfig() {
         registerListeners();
@@ -25,22 +26,22 @@ public class RecraftedConfig implements IConfig {
 
     @Override
     public void serializeClient(DisplayEntry.Obj entry) {
-
     }
 
     @Override
     public void deserializeClient(JsonObject object) {
-
     }
 
     @Override
     public void serialize(DisplayEntry.Obj entry) {
         seasonConfig.serialize(entry);
+        worldConfig.serialize(entry);
     }
 
     @Override
     public void deserialize(JsonObject object) {
         seasonConfig.deserialize(object);
+        worldConfig.deserialize(object);
     }
 
     @Override
@@ -50,6 +51,14 @@ public class RecraftedConfig implements IConfig {
 
     public static SeasonConfig getSeasonConfiguration() {
         return seasonConfig.get();
+    }
+
+    public static WorldConfig getWorldConfig() {
+        return worldConfig.get();
+    }
+
+    public static WorldConfig.PlantConfig getPlantConfig() {
+        return worldConfig.get().plants.get();
     }
 
     public static void addListener(final Runnable action) {

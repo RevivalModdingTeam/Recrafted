@@ -10,39 +10,31 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.trees.Tree;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.LazyLoadBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
-public class TreeSaplingBlock extends BushBlock {
+public class TreeSaplingBlock extends PlantBlock {
 
-    public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 3);
-    private final Tree tree;
+    private final LazyLoadBase<Tree> tree;
 
-    public TreeSaplingBlock(String name, Tree tree) {
-        super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).tickRandomly());
+    public TreeSaplingBlock(String name, Supplier<Tree> tree, Settings settings) {
+        super(name, settings);
         this.setRegistryName(Recrafted.makeResource(name));
-        this.setDefaultState(this.getStateContainer().getBaseState().with(AGE, 0));
-        this.tree = tree;
+        this.tree = new LazyLoadBase<>(tree);
         Registry.EventListener.registerBlockItem(this);
     }
 
     @Override
-    public void randomTick(BlockState state, World worldIn, BlockPos pos, Random random) {
-        if(random.nextFloat() <= 0.05F) {
-            if(state.get(AGE) == 3) {
-                if(!ForgeEventFactory.saplingGrowTree(worldIn, random, pos))
-                    return;
-                tree.spawn(worldIn, pos, state, random);
-            } else worldIn.setBlockState(pos, state.with(AGE, state.get(AGE) + 1));
+    public void tryGrow(BlockState state, World world, BlockPos pos, Random random) {
+        if(isMaxAge(state)) {
+            tree.getValue().spawn(world, pos, state, random);
+            return;
         }
-        super.randomTick(state, worldIn, pos, random);
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(AGE);
+        super.tryGrow(state, world, pos, random);
     }
 }

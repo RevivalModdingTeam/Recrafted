@@ -2,12 +2,13 @@ package dev.revivalmoddingteam.recrafted.handler;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
-import dev.revivalmoddingteam.recrafted.common.blocks.plant.GroundFruitBlock;
-import dev.revivalmoddingteam.recrafted.common.blocks.plant.GrowableBlock;
+import dev.revivalmoddingteam.recrafted.common.blocks.plant.AdvancedPlantBlock;
+import dev.revivalmoddingteam.recrafted.common.blocks.plant.PlantBlock;
 import dev.revivalmoddingteam.recrafted.common.effect.ThirstEffect;
 import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.common.items.PlantableItem;
 import dev.revivalmoddingteam.recrafted.common.items.RecraftedFood;
+import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.world.feature.DefaultTreeFeature;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -53,11 +54,11 @@ public class Registry {
 
     @ObjectHolder(Recrafted.MODID)
     public static class RBlocks {
-        public static final GrowableBlock BLUEBERRY_BUSH = null;
-        public static final GrowableBlock RASPBERRY_BUSH = null;
-        public static final GrowableBlock BLACKBERRY_BUSH = null;
-        public static final GrowableBlock SNOWBERRY_BUSH = null;
-        public static final GroundFruitBlock STRAWBERRY_PLANT = null;
+        public static final PlantBlock BLUEBERRY_BUSH = null;
+        public static final PlantBlock RASPBERRY_BUSH = null;
+        public static final PlantBlock BLACKBERRY_BUSH = null;
+        public static final PlantBlock SNOWBERRY_BUSH = null;
+        public static final AdvancedPlantBlock STRAWBERRY_PLANT = null;
     }
 
     public static class REntityTypes {
@@ -79,6 +80,11 @@ public class Registry {
 
     public static class RContainerTypes {
         public static final DeferredRegister<ContainerType<?>> TYPES = new DeferredRegister<>(ForgeRegistries.CONTAINERS, Recrafted.MODID);
+    }
+
+    @ObjectHolder(Recrafted.MODID)
+    public static class RBiomes {
+
     }
 
     public static class RFeatures {
@@ -103,11 +109,11 @@ public class Registry {
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(
-                    new GrowableBlock("blueberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(0.8F)),
-                    new GrowableBlock("raspberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(0.8F)),
-                    new GrowableBlock("blackberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(0.75F)),
-                    new GrowableBlock("snowberry_bush", new GrowableBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(1.0F)),
-                    new GroundFruitBlock("strawberry_plant", true, () -> new ItemStack(RItems.STRAWBERRY, 3))
+                    new PlantBlock("blueberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blueberry.get())),
+                    new PlantBlock("raspberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().raspberry.get())),
+                    new PlantBlock("blackberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blackberry.get())),
+                    new PlantBlock("snowberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().snowberry.get())),
+                    new AdvancedPlantBlock("strawberry_plant", new PlantBlock.Settings().product(() -> new ItemStack(RItems.STRAWBERRY, 3)).emptyShape().recoveryChance(RecraftedConfig.getPlantConfig().strawberry.get()))
             );
         }
 

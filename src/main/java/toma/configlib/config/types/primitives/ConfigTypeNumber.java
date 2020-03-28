@@ -18,6 +18,10 @@ public class ConfigTypeNumber<T extends Number> extends ConfigEntry<T> {
         this.limiter = limiter;
     }
 
+    public static Limiter _0_1_limiter() {
+        return Limiter.of(0.0D, 1.0D);
+    }
+
     public boolean hasLimiter() {
         return limiter != null;
     }
