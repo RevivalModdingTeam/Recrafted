@@ -6,14 +6,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class RecraftedBiome extends Biome {
 
-    public static Set<BiomeData> biomeDataSet = new HashSet<>();
+    private static Map<BiomeData.WeatherType, Set<BiomeData>> biomeDataMap = new HashMap<>();
     protected final BiomeType type;
 
     public RecraftedBiome(BiomeType type, Builder builder) {
@@ -22,12 +20,19 @@ public class RecraftedBiome extends Biome {
     }
 
     public static void fillBiomeList() {
+        biomeDataMap.put(BiomeData.WeatherType.STATIC, new HashSet<>());
+        biomeDataMap.put(BiomeData.WeatherType.DYNAMIC, new HashSet<>());
         Predicate<Biome> filter = biome -> biome.getDefaultTemperature() > 0 && biome.getDefaultTemperature() <= 0.8F && biome.precipitation != RainType.NONE;
         Collection<Biome> biomes = ForgeRegistries.BIOMES.getValues();
         for(Biome biome : biomes) {
-            if(filter.test(biome)) {
-                biomeDataSet.add(BiomeData.from(biome));
-            }
+            BiomeData data = BiomeData.from(biome);
+            biomeDataMap.get(filter.test(biome) ? BiomeData.WeatherType.DYNAMIC : BiomeData.WeatherType.STATIC).add(data);
+        }
+    }
+
+    public static void updateBiomeMapData(Season season, World world) {
+        for(Map.Entry<BiomeData.WeatherType, Set<BiomeData>> entry : biomeDataMap.entrySet()) {
+            entry.getValue().forEach(data -> data.update(season, world, entry.getKey() == BiomeData.WeatherType.DYNAMIC));
         }
     }
 
@@ -50,9 +55,13 @@ public class RecraftedBiome extends Biome {
             return new BiomeData(biome, biome.getDefaultTemperature());
         }
 
-        public void update(Season season, World world) {
-            biome.precipitation = season.isWinter() ? RainType.SNOW : RainType.RAIN;
+        protected void update(Season season, World world, boolean precipitation) {
+            if(precipitation) biome.precipitation = season.isWinter() ? RainType.SNOW : RainType.RAIN;
             biome.temperature = defaultTemperature + season.getTemperature(world) * 2;
+        }
+
+        public enum WeatherType {
+            STATIC, DYNAMIC
         }
     }
 }

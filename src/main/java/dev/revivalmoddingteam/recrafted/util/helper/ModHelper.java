@@ -40,7 +40,7 @@ public class ModHelper {
     public static float getTemperatureAt(World world, BlockPos pos) {
         Biome biome = world.getBiome(pos);
         Season season = WorldCapFactory.getData(world).getSeasonData().getSeason();
-        float baseTemperature = biome.getTemperature(pos) + season.getTemperature(world);
+        float baseTemperature = biome.getTemperature(pos);
         float modifier = baseTemperature < 0 ? -2.5F : 2.5F;
         int time = (int) world.getDayTime();
         float f0 = (time / 12000F) * 180;

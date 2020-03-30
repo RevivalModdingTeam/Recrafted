@@ -7,19 +7,13 @@ import dev.revivalmoddingteam.recrafted.world.biome.RecraftedBiome;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.FoliageColors;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Seasons {
 
@@ -74,11 +68,7 @@ public class Seasons {
     }
 
     public static void onSeasonChange(Season newSeason, World world) {
-        Set<RecraftedBiome.BiomeData> set = RecraftedBiome.biomeDataSet;
-        boolean flag = newSeason.isWinter();
-        for(RecraftedBiome.BiomeData data : set) {
-            data.update(newSeason, world);
-        }
+        RecraftedBiome.updateBiomeMapData(newSeason, world);
         if(!world.isRemote) {
             NetworkHandler.sendToAllClients(new CPacketUpdateBiomePrecipitation(), world);
         }
