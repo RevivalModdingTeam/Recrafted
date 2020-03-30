@@ -13,6 +13,6 @@ public class AppleTree extends Tree {
     @Nullable
     @Override
     protected AbstractTreeFeature<NoFeatureConfig> getTreeFeature(Random random) {
-        return Registry.RFeatures.APPLE_TREE_FEATURE.get();
+        return Registry.RFeatures.APPLE_TREE;
     }
 }

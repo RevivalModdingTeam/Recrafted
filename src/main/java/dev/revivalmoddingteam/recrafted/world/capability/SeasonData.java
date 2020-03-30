@@ -23,13 +23,16 @@ public class SeasonData {
             if(currentSeasonID == 3) {
                 lastTickDay = 0;
                 currentSeasonID = 0;
-            } else currentSeasonID = currentSeasonID + 1;
+            } else {
+                currentSeasonID = currentSeasonID + 1;
+            }
             NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), event.world);
             NetworkHandler.sendToAllClients(new CPacketSyncWorldData(WorldCapFactory.getData(event.world).serializeNBT()), event.world);
+            Seasons.onSeasonChange(this.getSeason(), event.world);
         }
     }
 
-    public void setSeasonID(int id, World world) {
+    public final void setSeasonID(int id, World world) {
         int seasonDays = RecraftedConfig.getSeasonConfiguration().yearCycle.get() / 4;
         this.dayInCycle = seasonDays * id;
         this.lastTickDay = dayInCycle;

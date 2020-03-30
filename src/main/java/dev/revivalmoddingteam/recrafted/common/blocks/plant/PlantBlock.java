@@ -1,6 +1,7 @@
 package dev.revivalmoddingteam.recrafted.common.blocks.plant;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
+import dev.revivalmoddingteam.recrafted.handler.Registry;
 import dev.revivalmoddingteam.recrafted.util.helper.ModHelper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.season.Season;
@@ -37,6 +38,11 @@ public class PlantBlock extends BushBlock implements Plant {
         this.setRegistryName(Recrafted.makeResource(name));
         this.settings = settings;
         this.setDefaultState(this.getStateContainer().getBaseState().with(AGE, 0).with(FROZEN, false));
+        this.makeBlockItem();
+    }
+
+    public void makeBlockItem() {
+        Registry.EventListener.registerBlockItem(this);
     }
 
     public void tryGrow(BlockState state, World world, BlockPos pos, Random random) {

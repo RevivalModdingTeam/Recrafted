@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.handler;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
+import dev.revivalmoddingteam.recrafted.common.blocks.overrides.CustomSnowBlock;
 import dev.revivalmoddingteam.recrafted.common.blocks.plant.AdvancedPlantBlock;
 import dev.revivalmoddingteam.recrafted.common.blocks.plant.PlantBlock;
 import dev.revivalmoddingteam.recrafted.common.effect.ThirstEffect;
@@ -11,17 +12,21 @@ import dev.revivalmoddingteam.recrafted.common.items.RecraftedFood;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.world.feature.DefaultTreeFeature;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.event.RegistryEvent;
@@ -36,7 +41,6 @@ import net.minecraftforge.registries.ObjectHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class Registry {
 
@@ -87,13 +91,9 @@ public class Registry {
 
     }
 
+    @ObjectHolder(Recrafted.MODID)
     public static class RFeatures {
-        public static final DeferredRegister<Feature<?>> FEATURES = new DeferredRegister<>(ForgeRegistries.FEATURES, Recrafted.MODID);
-        public static final RegistryObject<DefaultTreeFeature> APPLE_TREE_FEATURE = register("apple_tree", () -> new DefaultTreeFeature(NoFeatureConfig::deserialize, true));
-
-        private static <T extends Feature<?>> RegistryObject<T> register(String key, Supplier<T> supplier) {
-            return FEATURES.register(key, supplier);
-        }
+        public static final DefaultTreeFeature APPLE_TREE = null;
     }
 
     @ObjectHolder(Recrafted.MODID)
@@ -108,13 +108,17 @@ public class Registry {
 
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(
+            IForgeRegistry<Block> registry = event.getRegistry();
+            registry.registerAll(
                     new PlantBlock("blueberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blueberry.get())),
                     new PlantBlock("raspberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().raspberry.get())),
                     new PlantBlock("blackberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blackberry.get())),
                     new PlantBlock("snowberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().snowberry.get())),
                     new AdvancedPlantBlock("strawberry_plant", new PlantBlock.Settings().product(() -> new ItemStack(RItems.STRAWBERRY, 3)).emptyShape().recoveryChance(RecraftedConfig.getPlantConfig().strawberry.get()))
             );
+
+            // vanilla replacements
+            registry.register(new CustomSnowBlock(Block.Properties.create(Material.SNOW, DyeColor.WHITE).tickRandomly().hardnessAndResistance(0.1F).sound(SoundType.SNOW)).setRegistryName(new ResourceLocation("minecraft:snow")));
         }
 
         @SubscribeEvent
@@ -137,6 +141,13 @@ public class Registry {
         public static void registerEffects(RegistryEvent.Register<Effect> event) {
             event.getRegistry().registerAll(
                     new ThirstEffect().setRegistryName(Recrafted.makeResource("thirst"))
+            );
+        }
+
+        @SubscribeEvent
+        public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+            event.getRegistry().registerAll(
+                    new DefaultTreeFeature(NoFeatureConfig::deserialize, true).setRegistryName(Recrafted.makeResource("apple_tree"))
             );
         }
 

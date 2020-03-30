@@ -1,5 +1,6 @@
 package dev.revivalmoddingteam.recrafted.common.blocks.plant;
 
+import dev.revivalmoddingteam.recrafted.handler.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IntegerProperty;
@@ -16,6 +17,11 @@ public class AdvancedPlantBlock extends PlantBlock {
     public AdvancedPlantBlock(String name, Settings settings) {
         super(name, settings);
         this.setDefaultState(this.getStateContainer().getBaseState().with(AGE, 0).with(PLANT_AGE, 0).with(FROZEN, false));
+    }
+
+    @Override
+    public void makeBlockItem() {
+        Registry.EventListener.registerBlockItemNoTab(this);
     }
 
     @Override

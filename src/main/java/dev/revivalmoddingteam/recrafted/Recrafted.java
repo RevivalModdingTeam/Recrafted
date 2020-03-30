@@ -8,6 +8,7 @@ import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapStorage;
 import dev.revivalmoddingteam.recrafted.world.WorldTypeRecrafted;
+import dev.revivalmoddingteam.recrafted.world.biome.RecraftedBiome;
 import dev.revivalmoddingteam.recrafted.world.capability.IWorldCap;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapStorage;
@@ -34,7 +35,6 @@ public class Recrafted {
         Registry.REntityTypes.TYPES.register(eventBus);
         Registry.RContainerTypes.TYPES.register(eventBus);
         Registry.RTileEntityTypes.TYPES.register(eventBus);
-        Registry.RFeatures.FEATURES.register(eventBus);
 
         eventBus.addListener(this::setupCommon);
         eventBus.addListener(this::setupClient);
@@ -50,6 +50,7 @@ public class Recrafted {
         NetworkHandler.initialize();
         CapabilityManager.INSTANCE.register(IWorldCap.class, new WorldCapStorage(), WorldCapFactory::new);
         CapabilityManager.INSTANCE.register(IPlayerCap.class, new PlayerCapStorage(), PlayerCapFactory::new);
+        RecraftedBiome.fillBiomeList();
         worldTypeRecrafted = new WorldTypeRecrafted();
     }
 

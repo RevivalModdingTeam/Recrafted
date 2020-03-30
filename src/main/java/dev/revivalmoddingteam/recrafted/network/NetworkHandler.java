@@ -1,10 +1,7 @@
 package dev.revivalmoddingteam.recrafted.network;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
-import dev.revivalmoddingteam.recrafted.network.client.CPacketForceChunkReload;
-import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncPlayerData;
-import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
-import dev.revivalmoddingteam.recrafted.network.client.CPacketToggleDebug;
+import dev.revivalmoddingteam.recrafted.network.client.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -28,6 +25,7 @@ public class NetworkHandler {
         register(CPacketSyncWorldData.class, new CPacketSyncWorldData(null));
         register(CPacketToggleDebug.class, new CPacketToggleDebug());
         register(CPacketSyncPlayerData.class, new CPacketSyncPlayerData());
+        register(CPacketUpdateBiomePrecipitation.class, new CPacketUpdateBiomePrecipitation());
         Recrafted.log.debug("Registered {} packets", packetID);
     }
 
