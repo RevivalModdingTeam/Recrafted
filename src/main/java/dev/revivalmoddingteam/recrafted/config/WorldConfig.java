@@ -1,50 +1,39 @@
 package dev.revivalmoddingteam.recrafted.config;
 
-import com.google.gson.JsonObject;
-import toma.configlib.config.display.DisplayEntry;
-import toma.configlib.config.types.ConfigTypeObject;
-import toma.configlib.config.types.primitives.ConfigTypeDouble;
-import toma.configlib.config.types.primitives.ConfigTypeNumber;
-import toma.configlib.config.util.Serializable;
+import toma.config.object.builder.ConfigBuilder;
 
-public class WorldConfig implements Serializable {
+public class WorldConfig {
 
-    public ConfigTypeObject<PlantConfig> plants = ConfigTypeObject.create("Plants", new PlantConfig());
+    public PlantConfig plants = new PlantConfig();
 
-    @Override
-    public void serialize(DisplayEntry.Obj displayEntry) {
-        plants.serialize(displayEntry);
+    public ConfigBuilder init(ConfigBuilder builder) {
+        return builder
+                .push()
+                .name("World")
+                .init()
+                .exec(plants::init)
+                .pop();
     }
 
-    @Override
-    public void deserialize(JsonObject jsonObject) {
-        plants.deserialize(jsonObject);
-    }
+    public static class PlantConfig {
 
-    public static class PlantConfig implements Serializable {
+        public float blueberry = 0.8F;
+        public float blackberry = 0.8F;
+        public float raspberry = 0.75F;
+        public float snowberry = 1.0F;
+        public float strawberry = 0.9F;
 
-        public ConfigTypeDouble blueberry = ConfigTypeDouble.create("Blueberry", 0.80, ConfigTypeNumber._0_1_limiter());
-        public ConfigTypeDouble blackberry = ConfigTypeDouble.create("Blackberry", 0.80, ConfigTypeNumber._0_1_limiter());
-        public ConfigTypeDouble raspberry = ConfigTypeDouble.create("Raspberry", 0.75, ConfigTypeNumber._0_1_limiter());
-        public ConfigTypeDouble snowberry = ConfigTypeDouble.create("Snowberry", 1.0, ConfigTypeNumber._0_1_limiter());
-        public ConfigTypeDouble strawberry = ConfigTypeDouble.create("Strawberry", 0.90, ConfigTypeNumber._0_1_limiter());
-
-        @Override
-        public void serialize(DisplayEntry.Obj displayEntry) {
-            blueberry.serialize(displayEntry);
-            blackberry.serialize(displayEntry);
-            raspberry.serialize(displayEntry);
-            snowberry.serialize(displayEntry);
-            strawberry.serialize(displayEntry);
-        }
-
-        @Override
-        public void deserialize(JsonObject jsonObject) {
-            blueberry.deserialize(jsonObject);
-            blackberry.deserialize(jsonObject);
-            raspberry.deserialize(jsonObject);
-            snowberry.deserialize(jsonObject);
-            strawberry.deserialize(jsonObject);
+        public ConfigBuilder init(ConfigBuilder builder) {
+            return builder
+                    .push()
+                    .name("Plants")
+                    .init()
+                    .addFloat(blueberry).name("Blueberry").range(0.0F, 1.0F).sliderRendering().add(t -> blueberry = t.value())
+                    .addFloat(blackberry).name("Blackberry").range(0.0F, 1.0F).sliderRendering().add(t -> blackberry = t.value())
+                    .addFloat(raspberry).name("Raspberry").range(0.0F, 1.0F).sliderRendering().add(t -> raspberry = t.value())
+                    .addFloat(snowberry).name("Snowberry").range(0.0F, 1.0F).sliderRendering().add(t -> snowberry = t.value())
+                    .addFloat(strawberry).name("Strawberry").range(0.0F, 1.0F).sliderRendering().add(t -> strawberry = t.value())
+                    .pop();
         }
     }
 }

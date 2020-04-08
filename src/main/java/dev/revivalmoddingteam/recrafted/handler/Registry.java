@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.handler;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.common.ItemGroups;
+import dev.revivalmoddingteam.recrafted.common.blocks.overrides.CustomIceBlock;
 import dev.revivalmoddingteam.recrafted.common.blocks.overrides.CustomSnowBlock;
 import dev.revivalmoddingteam.recrafted.common.blocks.plant.AdvancedPlantBlock;
 import dev.revivalmoddingteam.recrafted.common.blocks.plant.PlantBlock;
@@ -110,15 +111,16 @@ public class Registry {
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             IForgeRegistry<Block> registry = event.getRegistry();
             registry.registerAll(
-                    new PlantBlock("blueberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blueberry.get())),
-                    new PlantBlock("raspberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().raspberry.get())),
-                    new PlantBlock("blackberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().blackberry.get())),
-                    new PlantBlock("snowberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(RecraftedConfig.getPlantConfig().snowberry.get())),
-                    new AdvancedPlantBlock("strawberry_plant", new PlantBlock.Settings().product(() -> new ItemStack(RItems.STRAWBERRY, 3)).emptyShape().recoveryChance(RecraftedConfig.getPlantConfig().strawberry.get()))
+                    new PlantBlock("blueberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLUEBERRY, 3)).recoveryChance(RecraftedConfig.worldConfig.plants.blueberry)),
+                    new PlantBlock("raspberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.RASPBERRY, 3)).recoveryChance(RecraftedConfig.worldConfig.plants.raspberry)),
+                    new PlantBlock("blackberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.BLACKBERRY, 3)).recoveryChance(RecraftedConfig.worldConfig.plants.blackberry)),
+                    new PlantBlock("snowberry_bush", new PlantBlock.Settings().product(() -> new ItemStack(RItems.SNOWBERRY, 3)).recoveryChance(RecraftedConfig.worldConfig.plants.snowberry)),
+                    new AdvancedPlantBlock("strawberry_plant", new PlantBlock.Settings().product(() -> new ItemStack(RItems.STRAWBERRY, 3)).emptyShape().recoveryChance(RecraftedConfig.worldConfig.plants.strawberry))
             );
 
             // vanilla replacements
             registry.register(new CustomSnowBlock(Block.Properties.create(Material.SNOW, DyeColor.WHITE).tickRandomly().hardnessAndResistance(0.1F).sound(SoundType.SNOW)).setRegistryName(new ResourceLocation("minecraft:snow")));
+            registry.register(new CustomIceBlock(Block.Properties.create(Material.ICE).slipperiness(0.98F).tickRandomly().hardnessAndResistance(0.5F).sound(SoundType.GLASS)).setRegistryName(new ResourceLocation("minecraft:ice")));
         }
 
         @SubscribeEvent

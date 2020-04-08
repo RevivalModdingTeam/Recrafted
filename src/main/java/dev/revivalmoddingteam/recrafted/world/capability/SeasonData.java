@@ -19,7 +19,7 @@ public class SeasonData {
     public void tickWorld(TickEvent.WorldTickEvent event) {
         lastTickDay = getDay(event.world);
         Season season = getSeason();
-        if(lastTickDay % RecraftedConfig.getSeasonConfiguration().yearCycle.get() == season.mildSeasonEnd) {
+        if(lastTickDay % RecraftedConfig.seasonConfig.yearCycle == season.mildSeasonEnd) {
             if(currentSeasonID == 3) {
                 lastTickDay = 0;
                 currentSeasonID = 0;
@@ -33,7 +33,7 @@ public class SeasonData {
     }
 
     public final void setSeasonID(int id, World world) {
-        int seasonDays = RecraftedConfig.getSeasonConfiguration().yearCycle.get() / 4;
+        int seasonDays = RecraftedConfig.seasonConfig.yearCycle / 4;
         this.dayInCycle = seasonDays * id;
         this.lastTickDay = dayInCycle;
         this.currentSeasonID = id;
@@ -57,7 +57,7 @@ public class SeasonData {
     }
 
     public int getDay(World world) {
-        return dayInCycle + (int) ((world.getDayTime() / 24000) % (RecraftedConfig.getSeasonConfiguration().yearCycle.get()));
+        return dayInCycle + (int) ((world.getDayTime() / 24000) % (RecraftedConfig.seasonConfig.yearCycle));
     }
 
     public CompoundNBT write() {

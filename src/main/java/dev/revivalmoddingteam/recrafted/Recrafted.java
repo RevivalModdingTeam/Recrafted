@@ -12,6 +12,7 @@ import dev.revivalmoddingteam.recrafted.world.biome.RecraftedBiome;
 import dev.revivalmoddingteam.recrafted.world.capability.IWorldCap;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapStorage;
+import dev.revivalmoddingteam.recrafted.world.season.Seasons;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import toma.configlib.ConfigLib;
+import toma.config.Config;
 
 @Mod(Recrafted.MODID)
 public class Recrafted {
@@ -39,7 +40,7 @@ public class Recrafted {
         eventBus.addListener(this::setupCommon);
         eventBus.addListener(this::setupClient);
 
-        ConfigLib.registerCustomConfigMod(getClass(), new RecraftedConfig());
+        Config.registerConfig(this.getClass(), RecraftedConfig::new);
     }
 
     private void setupClient(FMLClientSetupEvent event) {
@@ -50,6 +51,7 @@ public class Recrafted {
         NetworkHandler.initialize();
         CapabilityManager.INSTANCE.register(IWorldCap.class, new WorldCapStorage(), WorldCapFactory::new);
         CapabilityManager.INSTANCE.register(IPlayerCap.class, new PlayerCapStorage(), PlayerCapFactory::new);
+        Seasons.register();
         RecraftedBiome.fillBiomeList();
         worldTypeRecrafted = new WorldTypeRecrafted();
     }

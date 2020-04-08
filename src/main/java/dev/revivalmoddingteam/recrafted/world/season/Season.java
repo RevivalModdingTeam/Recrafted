@@ -6,8 +6,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-import java.util.function.Consumer;
-
 public class Season {
 
     private final ITextComponent name;
@@ -24,7 +22,7 @@ public class Season {
         this.foliageColorMultiplier = builder.foliageColor;
         this.tempModifier = builder.temperatureModifier;
 
-        int diff = RecraftedConfig.getSeasonConfiguration().yearCycle.get() / 4;
+        int diff = RecraftedConfig.seasonConfig.yearCycle / 4;
         mildSeasonStart = diff * index + 1;
         mildSeasonEnd = diff * (index + 1) - 1;
     }
