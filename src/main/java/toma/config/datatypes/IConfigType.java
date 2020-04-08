@@ -1,6 +1,5 @@
 package toma.config.datatypes;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import toma.config.object.IConfigSerializable;

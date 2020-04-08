@@ -62,6 +62,7 @@ public class ConfigLoader {
                         modCfg.createNewFile();
                         JsonObject object = new JsonObject();
                         configObject.save(object);
+                        ConfigUtils.dispatchConfigEvent(entry.getKey(), configObject);
                         FileWriter writer = new FileWriter(modCfg);
                         writer.write(GSON.toJson(object));
                         writer.close();
@@ -75,6 +76,7 @@ public class ConfigLoader {
                     JsonObject object = new JsonParser().parse(content).getAsJsonObject();
                     try {
                         configObject.load(object);
+                        ConfigUtils.dispatchConfigEvent(entry.getKey(), configObject);
                     } catch (Exception e) {
                         Config.log.fatal("Couldn't load config for {} mod, using defaults", entry.getKey());
                     }

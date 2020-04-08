@@ -4,8 +4,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import toma.config.ConfigLoader;
 import toma.config.datatypes.ConfigObject;
+import toma.config.event.ConfigUpdateEvent;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +34,7 @@ public class ConfigUtils {
         JsonObject json = new JsonObject();
         object.save(json);
         object.onLoad();
+        dispatchConfigEvent(modid, object);
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(ConfigLoader.GSON.toJson(json));
@@ -83,5 +86,9 @@ public class ConfigUtils {
             aList.add(valueGetter.apply(b));
         }
         return aList;
+    }
+
+    public static void dispatchConfigEvent(String modid, ConfigObject object) {
+        MinecraftForge.EVENT_BUS.post(new ConfigUpdateEvent(modid, object));
     }
 }
