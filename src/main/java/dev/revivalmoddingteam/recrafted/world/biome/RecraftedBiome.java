@@ -57,7 +57,7 @@ public class RecraftedBiome extends Biome {
 
         protected void update(Season season, World world, boolean precipitation) {
             if(precipitation) biome.precipitation = season.isWinter() ? RainType.SNOW : RainType.RAIN;
-            biome.temperature = defaultTemperature + season.getTemperature(world) * 2;
+            biome.temperature = defaultTemperature + season.getTemperature() * 2;
         }
 
         public enum WeatherType {

@@ -21,7 +21,7 @@ public class RecraftedCommand {
         commandDispatcher.register(Commands.literal("recrafted")
                 .requires(src -> src.hasPermissionLevel(4))
                 .then(Commands.literal("debug").executes(RecraftedCommand::toggleDebug))
-                .then(Commands.literal("season").then(Commands.argument("seasonID", IntegerArgumentType.integer(0, 3)).executes(ctx -> setSeason(ctx, IntegerArgumentType.getInteger(ctx, "seasonID")))))
+                .then(Commands.literal("season").then(Commands.argument("seasonID", IntegerArgumentType.integer(0, 11)).executes(ctx -> setSeason(ctx, IntegerArgumentType.getInteger(ctx, "seasonID")))))
                 .executes(RecraftedCommand::noargExec)
         );
     }

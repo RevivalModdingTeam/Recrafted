@@ -12,44 +12,37 @@ import net.minecraftforge.event.TickEvent;
 
 public class SeasonData {
 
+    // 36 days, 12 seasons, 0 = 3, 1 = 6, 2 = 9, 3 = 12, 4 = 15, 5 = 18, 6 = 21, 7 = 24, 8 = 27, 9 = 30, 10 = 33, 11 = 36
+    //
     private int currentSeasonID = 0;
-    private int dayInCycle = 0;
+    private int lastSeasonID = currentSeasonID;
     private int lastTickDay;
 
     public void tickWorld(TickEvent.WorldTickEvent event) {
         lastTickDay = getDay(event.world);
         Season season = getSeason();
-        if(lastTickDay % RecraftedConfig.seasonConfig.yearCycle == season.mildSeasonEnd) {
-            if(currentSeasonID == 3) {
-                lastTickDay = 0;
-                currentSeasonID = 0;
-            } else {
-                currentSeasonID = currentSeasonID + 1;
-            }
-            NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), event.world);
+        int yearLength = RecraftedConfig.seasonConfig.yearCycle;
+        int normalizedDay = lastTickDay % yearLength;
+        int seasonChange = yearLength / 12;
+        this.currentSeasonID = Math.min(11, normalizedDay / seasonChange);
+        if(currentSeasonID != lastSeasonID) {
+            if(getSeason().updatesChunks())
+                NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), event.world);
             NetworkHandler.sendToAllClients(new CPacketSyncWorldData(WorldCapFactory.getData(event.world).serializeNBT()), event.world);
             Seasons.onSeasonChange(this.getSeason(), event.world);
         }
+        this.lastSeasonID = currentSeasonID;
     }
 
     public final void setSeasonID(int id, World world) {
-        int seasonDays = RecraftedConfig.seasonConfig.yearCycle / 4;
-        this.dayInCycle = seasonDays * id;
-        this.lastTickDay = dayInCycle;
+        int seasonDays = RecraftedConfig.seasonConfig.yearCycle / 12;
+        this.lastTickDay = seasonDays * id;
         this.currentSeasonID = id;
         NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), world);
     }
 
-    public void setDayInCycle(int dayInCycle) {
-        this.dayInCycle = dayInCycle;
-    }
-
     public int getCurrentSeasonID() {
         return currentSeasonID;
-    }
-
-    public int getDayInCycle() {
-        return dayInCycle;
     }
 
     public Season getSeason() {
@@ -57,18 +50,20 @@ public class SeasonData {
     }
 
     public int getDay(World world) {
-        return dayInCycle + (int) ((world.getDayTime() / 24000) % (RecraftedConfig.seasonConfig.yearCycle));
+        return (int) ((world.getDayTime() / 24000) % (RecraftedConfig.seasonConfig.yearCycle));
+    }
+
+    private int validate(int seasonID) {
+        return seasonID < 0 ? Seasons.REGISTRY.length - 1 : seasonID;
     }
 
     public CompoundNBT write() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt("day", lastTickDay);
         nbt.putInt("seasonID", currentSeasonID);
         return nbt;
     }
 
     public void read(CompoundNBT nbt) {
-        dayInCycle = nbt.getInt("day");
         currentSeasonID = nbt.getInt("seasonID");
     }
 }

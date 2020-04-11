@@ -10,7 +10,7 @@ public class SeasonConfig {
         return builder
                 .push()
                 .name("Season").init()
-                .addInt(yearCycle).name("Year cycle").range(8, 128).sliderRendering().add(t -> yearCycle = t.value())
+                .addInt(yearCycle).name("Year cycle").range(24, 156).sliderRendering().add(t -> yearCycle = t.value())
                 .pop();
     }
 }

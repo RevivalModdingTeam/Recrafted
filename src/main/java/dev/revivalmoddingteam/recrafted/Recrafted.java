@@ -14,12 +14,16 @@ import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapStorage;
 import dev.revivalmoddingteam.recrafted.world.season.Seasons;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import toma.config.Config;
@@ -32,13 +36,16 @@ public class Recrafted {
     public static WorldTypeRecrafted worldTypeRecrafted;
 
     public Recrafted() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        Registry.REntityTypes.TYPES.register(eventBus);
-        Registry.RContainerTypes.TYPES.register(eventBus);
-        Registry.RTileEntityTypes.TYPES.register(eventBus);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
-        eventBus.addListener(this::setupCommon);
-        eventBus.addListener(this::setupClient);
+        Registry.REntityTypes.TYPES.register(modEventBus);
+        Registry.RContainerTypes.TYPES.register(modEventBus);
+        Registry.RTileEntityTypes.TYPES.register(modEventBus);
+
+        modEventBus.addListener(this::setupCommon);
+        modEventBus.addListener(this::setupClient);
+        forgeEventBus.addListener(this::serverStarting);
 
         Config.registerConfig(this.getClass(), RecraftedConfig::new);
     }
@@ -54,6 +61,14 @@ public class Recrafted {
         Seasons.register();
         RecraftedBiome.fillBiomeList();
         worldTypeRecrafted = new WorldTypeRecrafted();
+    }
+
+    private void serverStarting(FMLServerStartingEvent event) {
+        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(w -> {
+            if(w.getDimension().getType() == DimensionType.OVERWORLD) {
+                RecraftedBiome.updateBiomeMapData(WorldCapFactory.getData(w).getSeasonData().getSeason(), w);
+            }
+        });
     }
 
     public static ResourceLocation makeResource(String path) {

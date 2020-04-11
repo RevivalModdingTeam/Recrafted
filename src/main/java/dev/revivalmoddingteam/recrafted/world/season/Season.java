@@ -1,10 +1,7 @@
 package dev.revivalmoddingteam.recrafted.world.season;
 
-import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
-import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 
 public class Season {
 
@@ -12,8 +9,7 @@ public class Season {
     private final byte index;
     private final int waterColorMultipler, foliageColorMultiplier;
     private final float tempModifier;
-
-    public final int mildSeasonStart, mildSeasonEnd;
+    private final boolean forceChunkReload;
 
     public Season(SeasonBuilder builder) {
         this.name = new TranslationTextComponent("season." + builder.key);
@@ -21,10 +17,7 @@ public class Season {
         this.waterColorMultipler = builder.waterColor;
         this.foliageColorMultiplier = builder.foliageColor;
         this.tempModifier = builder.temperatureModifier;
-
-        int diff = RecraftedConfig.seasonConfig.yearCycle / 4;
-        mildSeasonStart = diff * index + 1;
-        mildSeasonEnd = diff * (index + 1) - 1;
+        this.forceChunkReload = builder.forceChunkUpdate;
     }
 
     public int getWaterColorMultipler() {
@@ -35,13 +28,8 @@ public class Season {
         return foliageColorMultiplier;
     }
 
-    public float getTemperature(World world) {
-        return tempModifier * (isMild(world) ? 0.5F : 1.0F);
-    }
-
-    public boolean isMild(World world) {
-        int day = WorldCapFactory.getData(world).getSeasonData().getDay(world);
-        return day <= mildSeasonStart || day >= mildSeasonEnd;
+    public float getTemperature() {
+        return tempModifier;
     }
 
     public byte getSeasonIndex() {
@@ -49,23 +37,31 @@ public class Season {
     }
 
     public boolean isSpring() {
-        return index == 0;
+        return isInRange(index, 0, 2);
     }
 
     public boolean isSummmer() {
-        return index == 1;
+        return isInRange(index, 3, 5);
     }
 
     public boolean isFall() {
-        return index == 2;
+        return isInRange(index, 6, 8);
     }
 
     public boolean isWinter() {
-        return index == 3;
+        return isInRange(index, 9, 11);
     }
 
     public ITextComponent getName() {
         return name;
+    }
+
+    public boolean updatesChunks() {
+        return forceChunkReload;
+    }
+
+    private boolean isInRange(int i, int min, int max) {
+        return i >= min && i <= max;
     }
 
     protected static class SeasonBuilder {
@@ -75,6 +71,7 @@ public class Season {
         private float temperatureModifier;
         private int waterColor;
         private int foliageColor;
+        private boolean forceChunkUpdate;
 
         private SeasonBuilder() {}
 
@@ -100,6 +97,11 @@ public class Season {
 
         public SeasonBuilder tempModifier(final float temperatureModifier) {
             this.temperatureModifier = temperatureModifier;
+            return this;
+        }
+
+        public SeasonBuilder updatesChunks() {
+            this.forceChunkUpdate = true;
             return this;
         }
 

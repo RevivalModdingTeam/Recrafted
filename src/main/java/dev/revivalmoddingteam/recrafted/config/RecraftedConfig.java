@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.config;
 
 import toma.config.IConfig;
 import toma.config.datatypes.ConfigObject;
+import toma.config.event.ConfigUpdateEvent;
 import toma.config.object.builder.ConfigBuilder;
 
 public class RecraftedConfig implements IConfig {
