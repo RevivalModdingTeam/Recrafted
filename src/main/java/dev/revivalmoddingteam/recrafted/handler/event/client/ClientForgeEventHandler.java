@@ -58,7 +58,7 @@ public class ClientForgeEventHandler {
             PlayerStatData stats = PlayerCapFactory.get(player).getStats();
             int thirstLevel = stats.getThirstLevel();
             int left = event.getWindow().getScaledWidth() / 2 + 10;
-            int top = event.getWindow().getScaledHeight() - (player.areEyesInFluid(FluidTags.WATER) || player.getAir() < 300 ? 57 : 49);
+            int top = event.getWindow().getScaledHeight() - (player.areEyesInFluid(FluidTags.WATER) || player.getAir() < 300 ? 58 : 48);
             int atlastX = player.getActivePotionEffect(Registry.REffects.THIRST) != null ? 3 : 0;
             for(int i = 1; i <= 10; i++) {
                 int pos = i * 2;

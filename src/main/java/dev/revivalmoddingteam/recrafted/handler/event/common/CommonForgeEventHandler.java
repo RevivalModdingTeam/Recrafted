@@ -6,20 +6,27 @@ import dev.revivalmoddingteam.recrafted.common.entity.RecraftedItemEntity;
 import dev.revivalmoddingteam.recrafted.handler.event.Action;
 import dev.revivalmoddingteam.recrafted.network.NetworkHandler;
 import dev.revivalmoddingteam.recrafted.network.client.CPacketSyncWorldData;
+import dev.revivalmoddingteam.recrafted.network.server.SPacketTryDrink;
 import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
 import dev.revivalmoddingteam.recrafted.player.PlayerCapProvider;
+import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -42,6 +49,24 @@ public class CommonForgeEventHandler {
             recraftedItemEntity.setMotion(entity.getMotion());
             event.getWorld().addEntity(recraftedItemEntity);
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickEmpty(PlayerInteractEvent.RightClickBlock event) {
+        PlayerEntity player = event.getPlayer();
+        World world = player.world;
+        if(world.isRemote && event.getHand() == Hand.MAIN_HAND && player.getHeldItemMainhand().isEmpty() && player.isSneaking()) {
+            IPlayerCap playerCap = PlayerCapFactory.get(player);
+            PlayerStatData statData = playerCap.getStats();
+            if(statData.isThirsty()) {
+                BlockPos pos = event.getPos().offset(event.getFace());
+                if(world.getFluidState(pos).isTagged(FluidTags.WATER)) {
+                    player.swingArm(event.getHand());
+                    player.playSound(SoundEvents.ENTITY_GENERIC_DRINK, 1.0F, 1.0F);
+                    NetworkHandler.sendServerPacket(new SPacketTryDrink(pos));
+                }
+            }
         }
     }
 

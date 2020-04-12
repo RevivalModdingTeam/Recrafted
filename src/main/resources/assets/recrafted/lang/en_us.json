@@ -13,10 +13,18 @@
 
     "effect.recrafted.thirst": "Thirst",
 
+    "season.early_spring": "Early Spring",
     "season.spring": "Spring",
+    "season.late_spring": "Late Spring",
+    "season.early_summer": "Early Summer",
     "season.summer": "Summer",
-    "season.fall": "Fall",
+    "season.late_summer": "Late Summer",
+    "season.early_autumn": "Early Autumn",
+    "season.autumn": "Autumn",
+    "season.late_autumn": "Late Autumn",
+    "season.early_winter": "Early Winter",
     "season.winter": "Winter",
+    "season.late_winter": "Late Winter",
 
     "generator.recrafted": "Recrafted"
 }

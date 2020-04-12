@@ -66,6 +66,10 @@ public class PlayerStatData {
         return maxStamina;
     }
 
+    public boolean isThirsty() {
+        return thirstLevel < 20;
+    }
+
     public CompoundNBT write() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("thirstLevel", thirstLevel);

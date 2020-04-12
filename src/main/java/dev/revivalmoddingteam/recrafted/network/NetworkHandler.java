@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.network;
 
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.network.client.*;
+import dev.revivalmoddingteam.recrafted.network.server.SPacketTryDrink;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -26,6 +27,7 @@ public class NetworkHandler {
         register(CPacketToggleDebug.class, new CPacketToggleDebug());
         register(CPacketSyncPlayerData.class, new CPacketSyncPlayerData());
         register(CPacketUpdateBiomePrecipitation.class, new CPacketUpdateBiomePrecipitation());
+        register(SPacketTryDrink.class, new SPacketTryDrink(null));
         Recrafted.log.debug("Registered {} packets", packetID);
     }
 

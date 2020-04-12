@@ -3,7 +3,7 @@ package dev.revivalmoddingteam.recrafted.util.helper;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.season.Season;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -57,6 +57,20 @@ public class ModHelper {
     }
 
     /* WORLD */
+
+    public static RayTraceResult rayTrace(World world, Entity entity, RayTraceContext.FluidMode fluidMode, double maxDistance) {
+        float yaw = entity.rotationYaw;
+        float pitch = entity.rotationPitch;
+        float cosYaw = MathHelper.cos(-yaw * (float) ((Math.PI / 180f) - Math.PI));
+        float sinYaw = MathHelper.sin(-yaw * (float) ((Math.PI / 180f) - Math.PI));
+        float cosPitch = -MathHelper.cos(-pitch * (float) (Math.PI / 180f));
+        float sinPitch = MathHelper.sin(-pitch * (float) (Math.PI / 180f));
+        float x = sinYaw * cosPitch;
+        float z = cosYaw * cosPitch;
+        Vec3d eyeLoc = entity.getEyePosition(1.0F);
+        Vec3d targetLoc = eyeLoc.add(x * maxDistance, sinPitch * maxDistance, z * maxDistance);
+        return world.rayTraceBlocks(new RayTraceContext(eyeLoc, targetLoc, RayTraceContext.BlockMode.OUTLINE, fluidMode, entity));
+    }
 
     public static void spawnEntityWithRandomMotion(World world, Entity entity, int modifier) {
         if(!world.isRemote) {

@@ -8,25 +8,23 @@ import dev.revivalmoddingteam.recrafted.world.season.Season;
 import dev.revivalmoddingteam.recrafted.world.season.Seasons;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 
 public class SeasonData {
 
-    // 36 days, 12 seasons, 0 = 3, 1 = 6, 2 = 9, 3 = 12, 4 = 15, 5 = 18, 6 = 21, 7 = 24, 8 = 27, 9 = 30, 10 = 33, 11 = 36
-    //
     private int currentSeasonID = 0;
     private int lastSeasonID = currentSeasonID;
-    private int lastTickDay;
 
     public void tickWorld(TickEvent.WorldTickEvent event) {
-        lastTickDay = getDay(event.world);
+        int day = getDay(event.world);
         Season season = getSeason();
         int yearLength = RecraftedConfig.seasonConfig.yearCycle;
-        int normalizedDay = lastTickDay % yearLength;
+        int normalizedDay = day % yearLength;
         int seasonChange = yearLength / 12;
         this.currentSeasonID = Math.min(11, normalizedDay / seasonChange);
-        if(currentSeasonID != lastSeasonID) {
-            if(getSeason().updatesChunks())
+        if (currentSeasonID != lastSeasonID) {
+            if (getSeason().updatesChunks())
                 NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), event.world);
             NetworkHandler.sendToAllClients(new CPacketSyncWorldData(WorldCapFactory.getData(event.world).serializeNBT()), event.world);
             Seasons.onSeasonChange(this.getSeason(), event.world);
@@ -36,9 +34,14 @@ public class SeasonData {
 
     public final void setSeasonID(int id, World world) {
         int seasonDays = RecraftedConfig.seasonConfig.yearCycle / 12;
-        this.lastTickDay = seasonDays * id;
+        int neededDay = id * seasonDays;
+        long worldTime = neededDay * 24000L;
+        for (ServerWorld sw : world.getServer().getWorlds()) {
+            sw.setDayTime(worldTime);
+        }
         this.currentSeasonID = id;
         NetworkHandler.sendToAllClients(new CPacketForceChunkReload(), world);
+        Seasons.onSeasonChange(getSeason(), world);
     }
 
     public int getCurrentSeasonID() {

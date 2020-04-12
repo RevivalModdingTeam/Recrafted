@@ -12,7 +12,6 @@ import net.minecraft.world.FoliageColors;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,13 +49,12 @@ public class Seasons {
         }
     }
 
-    // TODO update temperatures
     public static void register() {
         REGISTRY[0] = Season.SeasonBuilder.create()
                 .key("early_spring")
                 .id(0)
                 .colors(0x2F88F0, 0x00CD21)
-                .tempModifier(0.2F)
+                .tempModifier(0.1F)
                 .updatesChunks()
                 .build();
         REGISTRY[1] = Season.SeasonBuilder.create()
@@ -69,13 +67,13 @@ public class Seasons {
                 .key("late_spring")
                 .id(2)
                 .colors(0x2F88F0, 0x00CD21)
-                .tempModifier(0.2F)
+                .tempModifier(0.25F)
                 .build();
         REGISTRY[3] = Season.SeasonBuilder.create()
                 .key("early_summer")
                 .id(3)
                 .colors(0x34D3EF, 0x529300)
-                .tempModifier(0.4F)
+                .tempModifier(0.3F)
                 .updatesChunks()
                 .build();
         REGISTRY[4] = Season.SeasonBuilder.create()
@@ -88,13 +86,13 @@ public class Seasons {
                 .key("late_summer")
                 .id(5)
                 .colors(0x34D3EF, 0x529300)
-                .tempModifier(0.4F)
+                .tempModifier(0.2F)
                 .build();
         REGISTRY[6] = Season.SeasonBuilder.create()
                 .key("early_autumn")
                 .id(6)
                 .colors(0x005DFF, 0xA74200)
-                .tempModifier(0.05F)
+                .tempModifier(0.1F)
                 .updatesChunks()
                 .build();
         REGISTRY[7] = Season.SeasonBuilder.create()
@@ -107,13 +105,13 @@ public class Seasons {
                 .key("late_autumn")
                 .id(8)
                 .colors(0x005DFF, 0xA74200)
-                .tempModifier(0.05F)
+                .tempModifier(0.01F)
                 .build();
         REGISTRY[9] = Season.SeasonBuilder.create()
                 .key("early_winter")
                 .id(9)
                 .colors(0x2B8EB5, 0x36B569)
-                .tempModifier(-0.8F)
+                .tempModifier(-0.5F)
                 .updatesChunks()
                 .build();
         REGISTRY[10] = Season.SeasonBuilder.create()
@@ -126,7 +124,7 @@ public class Seasons {
                 .key("late_winter")
                 .id(11)
                 .colors(0x2B8EB5, 0x36B569)
-                .tempModifier(-0.8F)
+                .tempModifier(-0.5F)
                 .build();
     }
 }
