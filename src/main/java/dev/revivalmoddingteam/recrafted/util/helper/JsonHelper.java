@@ -3,6 +3,7 @@ package dev.revivalmoddingteam.recrafted.util.helper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.revivalmoddingteam.recrafted.Recrafted;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -16,11 +17,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class JsonHelper {
 
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public static <T> T getAsPrimitive(String key, JsonObject object, Function<JsonPrimitive, T> function, T def) {
+        return object.has(key) ? function.apply(object.getAsJsonPrimitive(key)) : def;
+    }
 
     public static void createItemFiles(String itemModelsPath) {
         Collection<Item> collection = ForgeRegistries.ITEMS.getValues().stream().filter(i -> i.getRegistryName().getNamespace().equals(Recrafted.MODID)).collect(Collectors.toList());

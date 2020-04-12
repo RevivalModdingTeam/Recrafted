@@ -1,5 +1,5 @@
 {
-    "item": "minecraft:water_bottle",
+    "item": "minecraft:potion",
     "alwaysUseable": true,
     "level": 5,
     "effects": [
