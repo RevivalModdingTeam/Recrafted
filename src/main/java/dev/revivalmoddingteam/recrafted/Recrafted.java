@@ -1,5 +1,6 @@
 package dev.revivalmoddingteam.recrafted;
 
+import dev.revivalmoddingteam.recrafted.api.loader.DrinkManager;
 import dev.revivalmoddingteam.recrafted.client.render.ClientManager;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.handler.Registry;
@@ -13,6 +14,7 @@ import dev.revivalmoddingteam.recrafted.world.capability.IWorldCap;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapFactory;
 import dev.revivalmoddingteam.recrafted.world.capability.WorldCapStorage;
 import dev.revivalmoddingteam.recrafted.world.season.Seasons;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,6 +23,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -32,6 +35,8 @@ import toma.config.Config;
 public class Recrafted {
     public static final String MODID = "recrafted";
     public static final Logger log = LogManager.getLogger();
+
+    public static DrinkManager drinkManager = new DrinkManager();
 
     public static WorldTypeRecrafted worldTypeRecrafted;
 
@@ -46,6 +51,7 @@ public class Recrafted {
         modEventBus.addListener(this::setupCommon);
         modEventBus.addListener(this::setupClient);
         forgeEventBus.addListener(this::serverStarting);
+        forgeEventBus.addListener(this::serverAboutToStart);
 
         Config.registerConfig(this.getClass(), RecraftedConfig::new);
     }
@@ -63,8 +69,14 @@ public class Recrafted {
         worldTypeRecrafted = new WorldTypeRecrafted();
     }
 
+    private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        server.getResourceManager().addReloadListener(drinkManager);
+    }
+
     private void serverStarting(FMLServerStartingEvent event) {
-        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(w -> {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        server.getWorlds().forEach(w -> {
             if(w.getDimension().getType() == DimensionType.OVERWORLD) {
                 RecraftedBiome.updateBiomeMapData(WorldCapFactory.getData(w).getSeasonData().getSeason(), w);
             }
