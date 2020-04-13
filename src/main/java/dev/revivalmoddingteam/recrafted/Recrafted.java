@@ -1,6 +1,6 @@
 package dev.revivalmoddingteam.recrafted;
 
-import dev.revivalmoddingteam.recrafted.api.loader.DrinkManager;
+import dev.revivalmoddingteam.recrafted.api.loader.drink.DrinkManager;
 import dev.revivalmoddingteam.recrafted.client.render.ClientManager;
 import dev.revivalmoddingteam.recrafted.config.RecraftedConfig;
 import dev.revivalmoddingteam.recrafted.handler.Registry;

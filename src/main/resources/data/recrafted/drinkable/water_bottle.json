@@ -1,0 +1,12 @@
+{
+    "item": "minecraft:potion",
+    "level": 5,
+    "effects":
+    [
+        {
+            "chance": 0.75,
+            "type": "recrafted:thirst",
+            "duration": 600
+        }
+    ]
+}

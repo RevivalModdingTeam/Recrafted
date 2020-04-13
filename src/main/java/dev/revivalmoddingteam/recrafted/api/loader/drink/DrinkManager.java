@@ -1,9 +1,8 @@
-package dev.revivalmoddingteam.recrafted.api.loader;
+package dev.revivalmoddingteam.recrafted.api.loader.drink;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import dev.revivalmoddingteam.recrafted.Recrafted;
-import dev.revivalmoddingteam.recrafted.api.loader.data.DrinkData;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -13,6 +12,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 public class DrinkManager extends JsonReloadListener {
 
-    public static Map<Item, DrinkData> DRINK_REGISTRY = new HashMap<>();
+    protected static Map<Item, DrinkData> DRINK_REGISTRY = new HashMap<>();
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(DrinkData.class, new Deserializer())
             .registerTypeAdapter(DrinkData.EffectEntry[].class, new DrinkData.EffectEntry.EntryDeserializer())
@@ -29,14 +29,17 @@ public class DrinkManager extends JsonReloadListener {
             .create();
 
     public DrinkManager() {
-        super(GSON, "drink");
+        super(GSON, "drinkable");
+    }
+
+    @Nullable
+    public static DrinkData getDrinkStats(Item item) {
+        return DRINK_REGISTRY.get(item);
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonObject> map, IResourceManager resourceManagerIn, IProfiler profilerIn) {
         for(Map.Entry<ResourceLocation, JsonObject> entry : map.entrySet()) {
-            if(entry.getKey().toString().startsWith("_")) continue;
-            DrinkData drinkData;
             try {
                 // registered right after it's successfully parsed, in DrinkData constructor
                 GSON.fromJson(entry.getValue(), DrinkData.class);

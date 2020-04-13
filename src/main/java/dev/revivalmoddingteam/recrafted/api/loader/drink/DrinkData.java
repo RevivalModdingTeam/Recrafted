@@ -1,9 +1,14 @@
-package dev.revivalmoddingteam.recrafted.api.loader.data;
+package dev.revivalmoddingteam.recrafted.api.loader.drink;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import dev.revivalmoddingteam.recrafted.api.loader.DrinkManager;
+import dev.revivalmoddingteam.recrafted.player.IPlayerCap;
+import dev.revivalmoddingteam.recrafted.player.PlayerCapFactory;
+import dev.revivalmoddingteam.recrafted.player.objects.PlayerStatData;
 import dev.revivalmoddingteam.recrafted.util.helper.JsonHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -25,6 +30,22 @@ public class DrinkData {
         this.thirstLevel = thirstLevel;
         this.effectEntries = effectEntries;
         DrinkManager.DRINK_REGISTRY.put(item, this);
+    }
+
+    public void applyOn(Entity entity) {
+        for(EffectEntry effectEntry : effectEntries) {
+            if(entity.world.rand.nextFloat() <= effectEntry.chance) {
+                ((LivingEntity) entity).addPotionEffect(effectEntry.instanceSupplier.get());
+            }
+        }
+        if(entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            IPlayerCap cap = PlayerCapFactory.get(player);
+            PlayerStatData statData = cap.getStats();
+            statData.setThirstLevel(Math.min(statData.getThirstLevel() + thirstLevel, 20));
+            statData.setThirstSaturation(20.0F);
+            cap.syncToClient();
+        }
     }
 
     public static class EffectEntry {
