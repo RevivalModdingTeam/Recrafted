@@ -1,13 +1,15 @@
 {
     "item": "minecraft:potion",
-    "alwaysUseable": true,
     "level": 5,
     "effects": [
         {
+            "chance": 0.75,
             "type": "recrafted:thirst",
             "duration": 600,
             "amplifier": 0,
-            "chance": 0.75
+            "ambient": false,
+            "particles": true,
+            "icon": true
         }
     ]
 }

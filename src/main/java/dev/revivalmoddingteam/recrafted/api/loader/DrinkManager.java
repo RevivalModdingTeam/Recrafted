@@ -2,6 +2,7 @@ package dev.revivalmoddingteam.recrafted.api.loader;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import dev.revivalmoddingteam.recrafted.Recrafted;
 import dev.revivalmoddingteam.recrafted.api.loader.data.DrinkData;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.Item;
@@ -33,15 +34,16 @@ public class DrinkManager extends JsonReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonObject> map, IResourceManager resourceManagerIn, IProfiler profilerIn) {
-        map.forEach((loc, json) -> {
+        for(Map.Entry<ResourceLocation, JsonObject> entry : map.entrySet()) {
+            if(entry.getKey().toString().startsWith("_")) continue;
             DrinkData drinkData;
             try {
-                drinkData = GSON.fromJson(json, DrinkData.class);
-                System.out.println("loaded");
+                // registered right after it's successfully parsed, in DrinkData constructor
+                GSON.fromJson(entry.getValue(), DrinkData.class);
             } catch (Exception e) {
-                e.printStackTrace();
+                Recrafted.log.error("Parsing error loading custom drinkable: {}, {}", entry.getKey(), e.getMessage());
             }
-        });
+        }
     }
 
     protected static class Deserializer implements JsonDeserializer<DrinkData> {
@@ -51,12 +53,11 @@ public class DrinkManager extends JsonReloadListener {
             if(!json.isJsonObject()) return null;
             JsonObject object = json.getAsJsonObject();
             String itemKey = Optional.ofNullable(object.getAsJsonPrimitive("item").getAsString()).orElseThrow(() -> new JsonSyntaxException("'item' property must be defined!"));
-            boolean alwaysUseable = Optional.ofNullable(object.getAsJsonPrimitive("alwaysUseable").getAsBoolean()).get();
             int thirstLevel = Optional.ofNullable(object.getAsJsonPrimitive("level").getAsInt()).orElseThrow(() -> new JsonSyntaxException("'level' property must be defined!"));
             DrinkData.EffectEntry[] effectEntries = object.has("effects") ? context.deserialize(object.get("effects"), DrinkData.EffectEntry[].class) : new DrinkData.EffectEntry[0];
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemKey));
             if(item == Items.AIR) throw new JsonSyntaxException("Unknown item! " + "(" + itemKey + ")");
-            return new DrinkData(item, thirstLevel, alwaysUseable, effectEntries);
+            return new DrinkData(item, thirstLevel, effectEntries);
         }
     }
 }
